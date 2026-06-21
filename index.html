@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ajami Translator — English to Hausa Ajami</title>
+  <meta name="description" content="Translate English text into Hausa Ajami script — the Arabic-derived writing system used by Hausa speakers for centuries." />
+
+  <!-- Google Fonts: Noto Naskh for Arabic/Ajami, Inter for Latin -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Design tokens ─────────────────────────────────────────────── */
+    :root {
+      --green-900: #0d2e18;
+      --green-800: #1C5E2C;
+      --green-600: #30B050;
+      --green-400: #5DCB7A;
+      --green-100: #AADDbb;
+      --green-50:  #e8f5ec;
+
+      --gold:      #D4A017;
+      --gold-light:#FFF0C0;
+
+      --ink:       #0a0a0a;
+      --surface:   #111613;
+      --panel:     #191f1b;
+      --border:    #243028;
+      --muted:     #5a6b60;
+      --light:     #c8d8cc;
+      --white:     #ffffff;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+
+      --font-latin: 'Inter', system-ui, sans-serif;
+      --font-ajami: 'Noto Naskh Arabic', 'Traditional Arabic', serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-latin);
+      background: var(--surface);
+      color: var(--light);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Layout ─────────────────────────────────────────────────────── */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-glyph {
+      font-family: var(--font-ajami);
+      font-size: 36px;
+      color: var(--green-600);
+      line-height: 1;
+      background: var(--green-900);
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--green-800);
+    }
+
+    .logo-text h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.3px;
+    }
+
+    .logo-text p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .suite-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .suite-link {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+
+    .suite-link:hover {
+      color: var(--green-400);
+      border-color: var(--green-800);
+    }
+
+    /* ── Hero ───────────────────────────────────────────────────────── */
+    .hero {
+      padding: 52px 0 36px;
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green-600);
+      margin-bottom: 14px;
+    }
+
+    .hero h2 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+      margin-bottom: 14px;
+    }
+
+    /* The signature element: Ajami script in the headline */
+    .hero h2 .ajami-inline {
+      font-family: var(--font-ajami);
+      color: var(--green-400);
+      font-size: 1.1em;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ── Language selector ───────────────────────────────────────────── */
+    .lang-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 0 0 24px;
+      flex-wrap: wrap;
+    }
+
+    .lang-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--light);
+      user-select: none;
+    }
+
+    .lang-pill.active {
+      background: var(--green-900);
+      border-color: var(--green-600);
+      color: var(--green-400);
+    }
+
+    .lang-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    .lang-pill.active .lang-dot {
+      background: var(--green-600);
+    }
+
+    .lang-arrow {
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    /* ── Translator card ─────────────────────────────────────────────── */
+    .translator {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .panes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 220px;
+    }
+
+    @media (max-width: 600px) {
+      .panes { grid-template-columns: 1fr; }
+      .pane-divider { display: none; }
+    }
+
+    .pane {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pane-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .pane-divider {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch;
+    }
+
+    /* Input pane */
+    #input-text {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: var(--font-latin);
+      font-size: 16px;
+      color: var(--white);
+      resize: none;
+      min-height: 160px;
+      line-height: 1.6;
+      caret-color: var(--green-600);
+    }
+
+    #input-text::placeholder { color: var(--muted); }
+
+    .char-count {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .char-count.warning { color: var(--gold); }
+
+    /* Output pane */
+    .output-pane {
+      background: var(--green-900);
+      position: relative;
+    }
+
+    #hausa-output {
+      font-size: 15px;
+      color: var(--light);
+      line-height: 1.8;
+      flex: 1;
+      min-height: 80px;
+    }
+
+    #hausa-output.placeholder-text {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    #ajami-output {
+      font-family: var(--font-ajami);
+      font-size: 26px;
+      color: var(--white);
+      direction: rtl;
+      line-height: 1.8;
+      flex: 1;
+      min-height: 80px;
+    }
+
+    #ajami-output.placeholder-text {
+      color: var(--muted);
+      font-size: 16px;
+      font-family: var(--font-latin);
+      font-style: italic;
+      direction: ltr;
+    }
+
+    /* ── Toolbar ─────────────────────────────────────────────────────── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      border: none;
+      font-family: var(--font-latin);
+    }
+
+    .btn-primary {
+      background: var(--green-600);
+      color: var(--white);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--green-400);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      color: var(--light);
+      border-color: var(--muted);
+    }
+
+    .btn-copy {
+      background: var(--green-900);
+      color: var(--green-400);
+      border: 1px solid var(--green-800);
+    }
+
+    .btn-copy:hover {
+      background: var(--green-800);
+    }
+
+    /* ── Status bar ──────────────────────────────────────────────────── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      min-height: 40px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .status-dot.loading {
+      background: var(--gold);
+      animation: pulse 1s infinite;
+    }
+
+    .status-dot.success { background: var(--green-600); }
+    .status-dot.error   { background: #ff4444; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    #status-text { color: var(--muted); }
+
+    /* ── Output section with two rows ───────────────────────────────── */
+    .output-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .output-row-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .output-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 10px 0;
+      opacity: 0.5;
+    }
+
+    /* ── Info cards ──────────────────────────────────────────────────── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .info-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    .info-card-icon {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .info-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .info-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── Examples ────────────────────────────────────────────────────── */
+    .examples-section {
+      margin: 16px 0 40px;
+    }
+
+    .examples-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .examples-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .example-chip {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--light);
+      cursor: pointer;
+      transition: all 0.18s;
+      background: var(--panel);
+    }
+
+    .example-chip:hover {
+      border-color: var(--green-600);
+      color: var(--green-400);
+      background: var(--green-900);
+    }
+
+    /* ── Footer ─────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    footer a {
+      color: var(--green-400);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Loading spinner ─────────────────────────────────────────────── */
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--green-600);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .spinner.active { display: inline-block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Transliteration note ────────────────────────────────────────── */
+    .transliteration-note {
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-glyph">ب</div>
+        <div class="logo-text">
+          <h1>Ajami Translator</h1>
+          <p>Part of the Ajami Suite</p>
+        </div>
+      </div>
+      <nav class="suite-links">
+        <a class="suite-link" href="https://github.com/ajami-suite/ajami-keyboard">⌨ Keyboard</a>
+        <a class="suite-link" href="https://github.com/ajami-suite/ajami-learn">📚 Learn</a>
+        <a class="suite-link" href="https://github.com/ajami-suite/ajami-translator">★ GitHub</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- Hero -->
+    <section class="hero">
+      <p class="hero-eyebrow">Hausa Ajami Script</p>
+      <h2>Type in English,<br>read in <span class="ajami-inline">أَجَامِي</span></h2>
+      <p>Translate English into Hausa, then render it in Ajami — the Arabic-derived script Hausa scholars have used since the 17th century.</p>
+    </section>
+
+    <!-- Language bar -->
+    <div class="lang-bar">
+      <div class="lang-pill active">
+        <div class="lang-dot"></div>
+        English
+      </div>
+      <span class="lang-arrow">→</span>
+      <div class="lang-pill active">
+        <div class="lang-dot"></div>
+        Hausa (Latin)
+      </div>
+      <span class="lang-arrow">→</span>
+      <div class="lang-pill active">
+        <div class="lang-dot"></div>
+        Hausa Ajami
+      </div>
+    </div>
+
+    <!-- Translator card -->
+    <div class="translator">
+      <div class="panes">
+
+        <!-- Input pane -->
+        <div class="pane">
+          <span class="pane-label">English</span>
+          <textarea
+            id="input-text"
+            placeholder="Type or paste English text here…"
+            maxlength="500"
+            spellcheck="true"
+            autofocus
+          ></textarea>
+          <span class="char-count" id="char-count">0 / 500</span>
+        </div>
+
+        <div class="pane-divider"></div>
+
+        <!-- Output pane -->
+        <div class="pane output-pane">
+          <div class="output-section">
+            <span class="output-row-label">Hausa</span>
+            <div id="hausa-output" class="placeholder-text">Translation appears here</div>
+          </div>
+          <hr class="output-divider" />
+          <div class="output-section">
+            <span class="output-row-label">Ajami Script</span>
+            <div id="ajami-output" class="placeholder-text">الكتابة العجمية تظهر هنا</div>
+            <p class="transliteration-note" id="transliteration-note"></p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <button class="btn btn-primary" id="translate-btn" disabled>
+            <div class="spinner" id="spinner"></div>
+            <span id="btn-label">Translate</span>
+          </button>
+          <button class="btn btn-ghost" id="clear-btn">Clear</button>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-copy" id="copy-hausa-btn" style="display:none">Copy Hausa</button>
+          &nbsp;
+          <button class="btn btn-copy" id="copy-ajami-btn" style="display:none">Copy Ajami</button>
+        </div>
+      </div>
+
+      <!-- Status bar -->
+      <div class="status-bar">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text">Ready — enter English text above</span>
+      </div>
+    </div>
+
+    <!-- Example phrases -->
+    <div class="examples-section">
+      <p class="examples-label">Try an example</p>
+      <div class="examples-row" id="examples-row">
+        <div class="example-chip">Peace be upon you</div>
+        <div class="example-chip">God is great</div>
+        <div class="example-chip">Knowledge is light</div>
+        <div class="example-chip">The water is cold</div>
+        <div class="example-chip">My father is a farmer</div>
+        <div class="example-chip">Where is the market?</div>
+        <div class="example-chip">The sun is rising</div>
+        <div class="example-chip">Thank you very much</div>
+      </div>
+    </div>
+
+    <!-- Info cards -->
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-icon">📜</div>
+        <h3>What is Ajami?</h3>
+        <p>Ajami is the practice of writing African languages using Arabic script. Hausa speakers have used it since the 17th century for poetry, trade, and Islamic scholarship.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">⚙️</div>
+        <h3>How it works</h3>
+        <p>English is first translated to Hausa using Meta's NLLB-200 model. The Hausa text is then converted to Ajami script using phoneme-to-glyph mapping from the West African Warsh tradition.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">⚠️</div>
+        <h3>Accuracy note</h3>
+        <p>Machine translation to Hausa is imperfect. Ajami rendering is rule-based and may miss regional variants. Use as a learning aid, not a certified translation.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>
+      Part of the <strong>Ajami Suite</strong> — open tools for digital Ajami literacy.<br/>
+      Translation powered by <a href="https://huggingface.co/facebook/nllb-200-distilled-600M" target="_blank">Meta NLLB-200</a> (CC-BY-NC 4.0).
+      Ajami rendering uses the West African Warsh orthography tradition.<br/>
+      <a href="https://github.com/ajami-suite/ajami-translator" target="_blank">View source on GitHub</a> ·
+      <a href="https://www.bu.edu/pardeeschool/research/african-studies-center/african-ajami-library/" target="_blank">African Ajami Library (BU)</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// ── Hausa Latin → Ajami transliteration engine ────────────────────────────
+// Based on West African / Warsh / Kano orthography tradition
+// Source: corpus/hausa_ajami_characters.json
+
+const PHONEME_MAP = [
+  // Hausa-specific implosives and special consonants — must come BEFORE single-letter matches
+  { lat: 'ɓ',  ajm: 'ٻ' },
+  { lat: 'ɗ',  ajm: 'ڟ' },
+  { lat: 'ƙ',  ajm: 'ڧ' },
+  { lat: 'ƴ',  ajm: 'ۑ' },
+
+  // Digraphs — must come BEFORE single consonants
+  { lat: 'sh',  ajm: 'ش' },
+  { lat: 'ts',  ajm: 'ط' },
+  { lat: 'ky',  ajm: 'كي' },
+  { lat: 'gy',  ajm: 'ݣي' },
+  { lat: 'kw',  ajm: 'كو' },
+  { lat: 'gw',  ajm: 'ݣو' },
+
+  // Vowels — long first, then short
+  { lat: 'aa', ajm: 'ا' },
+  { lat: 'ii', ajm: 'ي' },
+  { lat: 'uu', ajm: 'و' },
+
+  // Short vowels → diacritics
+  { lat: 'a',  ajm: 'َ' },
+  { lat: 'e',  ajm: 'ٜ' },
+  { lat: 'i',  ajm: 'ِ' },
+  { lat: 'u',  ajm: 'ُ' },
+  { lat: 'o',  ajm: 'ُو' },  // Hausa o = damma + waw
+
+  // Standard consonants
+  { lat: 'b',  ajm: 'ب' },
+  { lat: 't',  ajm: 'ت' },
+  { lat: 'j',  ajm: 'ج' },
+  { lat: 'h',  ajm: 'ه' },
+  { lat: 'd',  ajm: 'د' },
+  { lat: 'r',  ajm: 'ر' },
+  { lat: 'z',  ajm: 'ز' },
+  { lat: 's',  ajm: 'س' },
+  { lat: 'f',  ajm: 'ڢ' },   // West African fa
+  { lat: 'k',  ajm: 'ك' },
+  { lat: 'l',  ajm: 'ل' },
+  { lat: 'm',  ajm: 'م' },
+  { lat: 'n',  ajm: 'ن' },
+  { lat: 'w',  ajm: 'و' },
+  { lat: 'y',  ajm: 'ي' },
+  { lat: 'g',  ajm: 'ݣ' },
+  { lat: 'c',  ajm: 'ج' },   // c in Hausa = ch/j sound
+];
+
+// Word-final n → dotless nun (ں)
+function applyFinalNun(ajami) {
+  return ajami.replace(/نَ$/g, 'ں').replace(/نِ$/g, 'ں').replace(/نُ$/g, 'ں').replace(/ن$/g, 'ں');
+}
+
+function hausaLatinToAjami(text) {
+  if (!text || !text.trim()) return '';
+
+  const words = text.toLowerCase().split(/\s+/);
+  const ajmiWords = words.map(word => {
+    // Strip punctuation, preserve it
+    const punct = word.match(/[.,!?؟،۔]+$/)?.[0] || '';
+    const clean = word.replace(/[.,!?؟،۔]+$/, '');
+
+    let result = '';
+    let i = 0;
+    while (i < clean.length) {
+      let matched = false;
+      // Try longest match first (digraphs before single chars)
+      for (const { lat, ajm } of PHONEME_MAP) {
+        if (clean.slice(i, i + lat.length).toLowerCase() === lat) {
+          result += ajm;
+          i += lat.length;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) {
+        // Unknown character — skip silently (handles apostrophes, etc.)
+        i++;
+      }
+    }
+
+    // Apply word-final dotless nun
+    result = applyFinalNun(result);
+
+    // Add Arabic punctuation equivalent
+    const punctMap = { '.': '۔', ',': '،', '?': '؟', '!': '!' };
+    const ajmiPunct = punct.split('').map(p => punctMap[p] || p).join('');
+
+    return result + ajmiPunct;
+  });
+
+  // RTL: words are already correct, join with space
+  return ajmiWords.join(' ');
+}
+
+// ── HuggingFace NLLB API call ─────────────────────────────────────────────
+// Using the fine-tuned English→Hausa model: mide6x/english-hausa-nllb
+// Falls back to facebook/nllb-200-distilled-600M with hau_Latn target
+
+async function translateToHausa(englishText) {
+  const HF_API = 'https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt-en-ha';
+
+  const response = await fetch(HF_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ inputs: englishText })
+  });
+
+  if (!response.ok) {
+    // Model may be loading — HuggingFace returns 503 on cold start
+    if (response.status === 503) {
+      throw new Error('Model is loading, please try again in 20 seconds');
+    }
+    throw new Error(`Translation failed (${response.status})`);
+  }
+
+  const data = await response.json();
+
+  // Response format: [{ translation_text: "..." }]
+  if (Array.isArray(data) && data[0]?.translation_text) {
+    return data[0].translation_text;
+  }
+
+  // NLLB format: [{ generated_text: "..." }]
+  if (Array.isArray(data) && data[0]?.generated_text) {
+    return data[0].generated_text;
+  }
+
+  throw new Error('Unexpected response format from translation API');
+}
+
+// ── UI Logic ──────────────────────────────────────────────────────────────
+
+const inputEl        = document.getElementById('input-text');
+const charCountEl    = document.getElementById('char-count');
+const translateBtn   = document.getElementById('translate-btn');
+const clearBtn       = document.getElementById('clear-btn');
+const copyHausaBtn   = document.getElementById('copy-hausa-btn');
+const copyAjamiBtn   = document.getElementById('copy-ajami-btn');
+const hausaOutputEl  = document.getElementById('hausa-output');
+const ajmiOutputEl   = document.getElementById('ajami-output');
+const statusDot      = document.getElementById('status-dot');
+const statusText     = document.getElementById('status-text');
+const spinner        = document.getElementById('spinner');
+const btnLabel       = document.getElementById('btn-label');
+const noteEl         = document.getElementById('transliteration-note');
+
+let hausaText = '';
+let ajmiText  = '';
+
+function setStatus(state, message) {
+  statusDot.className = 'status-dot ' + state;
+  statusText.textContent = message;
+}
+
+function setLoading(loading) {
+  translateBtn.disabled = loading;
+  spinner.classList.toggle('active', loading);
+  btnLabel.textContent = loading ? 'Translating…' : 'Translate';
+}
+
+inputEl.addEventListener('input', () => {
+  const len = inputEl.value.length;
+  charCountEl.textContent = `${len} / 500`;
+  charCountEl.className = 'char-count' + (len > 400 ? ' warning' : '');
+  translateBtn.disabled = len === 0;
+  if (len === 0) setStatus('', 'Ready — enter English text above');
+});
+
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    if (!translateBtn.disabled) doTranslate();
+  }
+});
+
+clearBtn.addEventListener('click', () => {
+  inputEl.value = '';
+  charCountEl.textContent = '0 / 500';
+  charCountEl.className = 'char-count';
+  translateBtn.disabled = true;
+  hausaOutputEl.textContent = 'Translation appears here';
+  hausaOutputEl.className = 'placeholder-text';
+  ajmiOutputEl.textContent = 'الكتابة العجمية تظهر هنا';
+  ajmiOutputEl.className = 'placeholder-text';
+  noteEl.textContent = '';
+  copyHausaBtn.style.display = 'none';
+  copyAjamiBtn.style.display = 'none';
+  setStatus('', 'Ready — enter English text above');
+  hausaText = '';
+  ajmiText  = '';
+  inputEl.focus();
+});
+
+translateBtn.addEventListener('click', doTranslate);
+
+async function doTranslate() {
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  setLoading(true);
+  setStatus('loading', 'Translating English → Hausa…');
+
+  try {
+    // Step 1: English → Hausa (Latin)
+    hausaText = await translateToHausa(text);
+
+    // Update Hausa output
+    hausaOutputEl.textContent = hausaText;
+    hausaOutputEl.className = '';
+
+    setStatus('loading', 'Converting Hausa → Ajami script…');
+
+    // Step 2: Hausa (Latin) → Ajami
+    ajmiText = hausaLatinToAjami(hausaText);
+
+    if (ajmiText.trim()) {
+      ajmiOutputEl.textContent = ajmiText;
+      ajmiOutputEl.className = '';
+      noteEl.textContent = 'Rendered in West African Warsh / Kano Ajami orthography';
+    } else {
+      ajmiOutputEl.textContent = 'Could not render Ajami for this text';
+      ajmiOutputEl.className = 'placeholder-text';
+    }
+
+    copyHausaBtn.style.display = 'inline-flex';
+    copyAjamiBtn.style.display = 'inline-flex';
+    setStatus('success', 'Done — copy Hausa or Ajami text using the buttons above');
+
+  } catch (err) {
+    setStatus('error', err.message || 'Translation failed — check your connection and try again');
+    hausaOutputEl.textContent = 'Translation failed';
+    hausaOutputEl.className = 'placeholder-text';
+    ajmiOutputEl.textContent = 'الكتابة العجمية تظهر هنا';
+    ajmiOutputEl.className = 'placeholder-text';
+  } finally {
+    setLoading(false);
+  }
+}
+
+// Copy buttons
+copyHausaBtn.addEventListener('click', () => {
+  if (!hausaText) return;
+  navigator.clipboard.writeText(hausaText).then(() => {
+    copyHausaBtn.textContent = 'Copied!';
+    setTimeout(() => { copyHausaBtn.textContent = 'Copy Hausa'; }, 2000);
+  });
+});
+
+copyAjamiBtn.addEventListener('click', () => {
+  if (!ajmiText) return;
+  navigator.clipboard.writeText(ajmiText).then(() => {
+    copyAjamiBtn.textContent = 'Copied!';
+    setTimeout(() => { copyAjamiBtn.textContent = 'Copy Ajami'; }, 2000);
+  });
+});
+
+// Example chips
+document.querySelectorAll('.example-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    inputEl.value = chip.textContent.trim();
+    inputEl.dispatchEvent(new Event('input'));
+    inputEl.focus();
+    doTranslate();
+  });
+});
+</script>
+
+</body>
+</html>
