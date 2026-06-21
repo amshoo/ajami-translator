@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contribute Audio — Ajami Translator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Inter:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --parch:    #FAF7F0;
+      --parch-2:  #F3EDE0;
+      --parch-3:  #E8DFC8;
+      --ink:      #1A1208;
+      --ink-2:    #4A3F28;
+      --ink-3:    #7A6A4A;
+      --green:    #2A7A40;
+      --green-l:  #3DA055;
+      --green-bg: #EBF5EE;
+      --green-brd:#B8DEC4;
+      --gold:     #C08020;
+      --gold-bg:  #FDF3DC;
+      --gold-brd: #E8C870;
+      --red:      #B83030;
+      --red-bg:   #FDF0EE;
+      --red-brd:  #E8B8B8;
+      --border:   #D8CEBC;
+      --border-l: #EDE5D4;
+      --shadow:   0 2px 8px rgba(80,60,20,.10);
+      --shadow-lg:0 4px 20px rgba(80,60,20,.14);
+      --r-sm: 8px; --r-md: 14px; --r-lg: 20px;
+      --fl: 'Inter', system-ui, sans-serif;
+      --fd: 'Lora', Georgia, serif;
+      --fa: 'Noto Naskh Arabic','Traditional Arabic',serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--fl);background:var(--parch);color:var(--ink);min-height:100vh;line-height:1.6}
+    .container{max-width:900px;margin:0 auto;padding:0 20px}
+
+    /* Header */
+    header{background:#fff;border-bottom:1px solid var(--border);padding:14px 0;box-shadow:var(--shadow)}
+    .hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo-g{font-family:var(--fa);font-size:28px;color:#fff;background:var(--green);width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-sm);box-shadow:var(--shadow)}
+    .logo h1{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink)}
+    .logo p{font-size:11px;color:var(--ink-3)}
+    .nav-links{display:flex;gap:6px;flex-wrap:wrap}
+    .nav-link{font-size:11px;color:var(--ink-3);text-decoration:none;padding:4px 11px;border:1px solid var(--border);border-radius:20px;background:#fff;transition:all .2s}
+    .nav-link:hover,.nav-link.active{color:var(--green);border-color:var(--green-brd);background:var(--green-bg)}
+
+    /* Hero */
+    .hero{padding:32px 0 24px;text-align:center}
+    .hero-eye{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+    .hero h2{font-family:var(--fd);font-size:clamp(22px,4vw,34px);font-weight:700;color:var(--ink);line-height:1.25;margin-bottom:10px}
+    .hero p{font-size:14px;color:var(--ink-2);max-width:540px;margin:0 auto}
+
+    /* Progress bar */
+    .progress-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-lg);padding:22px 28px;margin:0 0 24px;box-shadow:var(--shadow-lg)}
+    .progress-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+    .progress-title{font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink)}
+    .progress-nums{font-size:13px;color:var(--ink-2)}
+    .progress-nums span{font-weight:700;color:var(--green)}
+    .progress-bar-wrap{background:var(--parch-2);border-radius:20px;height:12px;overflow:hidden;border:1px solid var(--border-l)}
+    .progress-bar{height:100%;background:linear-gradient(90deg,var(--green),var(--green-l));border-radius:20px;transition:width .5s ease;min-width:4px}
+    .progress-cats{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .pcat{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--border);background:var(--parch-2);color:var(--ink-3)}
+    .pcat.done{border-color:var(--green-brd);background:var(--green-bg);color:var(--green)}
+    .pcat.partial{border-color:var(--gold-brd);background:var(--gold-bg);color:var(--gold)}
+
+    /* How it works */
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0 0 28px}
+    .step{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-md);padding:18px;box-shadow:var(--shadow);position:relative}
+    .step-num{font-family:var(--fd);font-size:28px;font-weight:700;color:var(--parch-3);line-height:1;margin-bottom:8px}
+    .step h3{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:5px}
+    .step p{font-size:12px;color:var(--ink-2);line-height:1.6}
+
+    /* Filters */
+    .filters{display:flex;align-items:center;gap:10px;margin:0 0 16px;flex-wrap:wrap}
+    .filter-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-3)}
+    .f-tab{padding:5px 13px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;color:var(--ink-3);cursor:pointer;transition:all .18s;background:#fff}
+    .f-tab.active{border-color:var(--green-brd);color:var(--green);background:var(--green-bg)}
+    .search-wrap{margin-left:auto}
+    .f-search{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:6px 12px;font-size:12px;color:var(--ink);outline:none;font-family:var(--fl);width:160px}
+    .f-search:focus{border-color:var(--green-brd)}
+
+    /* Word grid */
+    .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:32px}
+    .word-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-md);padding:14px 16px;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
+    .word-card:hover{border-color:var(--green-brd);box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+    .word-card.has-audio{border-color:var(--green-brd);background:var(--green-bg)}
+    .word-card.selected{border-color:var(--green);border-width:2px;box-shadow:0 0 0 3px rgba(42,122,64,.12)}
+    .wc-en{font-size:11px;color:var(--ink-3);margin-bottom:3px}
+    .wc-ha{font-size:15px;font-weight:600;color:var(--ink)}
+    .wc-aj{font-family:var(--fa);font-size:20px;color:var(--green);direction:rtl;margin:4px 0}
+    .wc-file{font-size:10px;color:var(--ink-3);font-family:monospace;margin-top:4px;word-break:break-all}
+    .wc-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;margin-top:6px}
+    .wc-badge.done{background:var(--green-bg);color:var(--green);border:1px solid var(--green-brd)}
+    .wc-badge.missing{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-brd)}
+
+    /* Recording panel */
+    .rec-panel{background:#fff;border:2px solid var(--green);border-radius:var(--r-lg);padding:28px;margin-bottom:28px;box-shadow:var(--shadow-lg);display:none}
+    .rec-panel.visible{display:block}
+    .rec-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+    .rec-word{font-family:var(--fd);font-size:22px;font-weight:700;color:var(--ink)}
+    .rec-word .ajami{font-family:var(--fa);font-size:30px;color:var(--green);direction:rtl;display:block;margin-top:4px}
+    .rec-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink-3);padding:4px;line-height:1}
+    .rec-close:hover{color:var(--red)}
+
+    .rec-guide{background:var(--gold-bg);border:1px solid var(--gold-brd);border-radius:var(--r-sm);padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--ink-2);line-height:1.7}
+    .rec-guide strong{color:var(--gold)}
+
+    .rec-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .rec-btn{padding:10px 22px;border-radius:var(--r-md);font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:var(--fl);display:flex;align-items:center;gap:8px;transition:all .2s}
+    .rec-btn.start{background:var(--red);color:#fff;box-shadow:0 2px 8px rgba(184,48,48,.3)}
+    .rec-btn.start:hover{background:#943030;transform:translateY(-1px)}
+    .rec-btn.stop{background:var(--ink);color:#fff}
+    .rec-btn.stop:hover{background:#333}
+    .rec-btn.play{background:var(--green-bg);color:var(--green);border:1.5px solid var(--green-brd)}
+    .rec-btn.play:hover{background:var(--green-brd)}
+    .rec-btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+    .rec-timer{font-size:22px;font-weight:700;color:var(--red);font-variant-numeric:tabular-nums;min-width:60px}
+    .rec-status{font-size:12px;color:var(--ink-3)}
+    .rec-status.recording{color:var(--red);font-weight:600}
+    .rec-status.done{color:var(--green);font-weight:600}
+
+    /* Waveform visualizer */
+    .waveform{width:100%;height:60px;background:var(--parch-2);border-radius:var(--r-sm);border:1px solid var(--border-l);margin-bottom:16px;overflow:hidden}
+    .waveform canvas{width:100%;height:100%}
+
+    /* Download & instructions */
+    .dl-section{border-top:1px solid var(--border-l);padding-top:20px}
+    .dl-title{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:14px}
+    .dl-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;background:var(--green);color:#fff;border:none;border-radius:var(--r-md);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--fl);box-shadow:0 2px 8px rgba(42,122,64,.25);transition:all .2s;text-decoration:none}
+    .dl-btn:hover{background:var(--green-l);transform:translateY(-1px)}
+    .dl-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+    .pr-steps{margin-top:20px}
+    .pr-steps h4{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px}
+    .pr-step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
+    .pr-step-num{background:var(--green);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+    .pr-step-body{font-size:13px;color:var(--ink-2);line-height:1.6}
+    .pr-step-body code{background:var(--parch-2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:12px;color:var(--green);font-family:monospace;word-break:break-all}
+    .pr-step-body a{color:var(--green);font-weight:600}
+
+    .quality-tips{background:var(--parch-2);border:1px solid var(--border-l);border-radius:var(--r-sm);padding:14px 16px;margin-top:16px}
+    .quality-tips h4{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:.5px}
+    .quality-tips ul{font-size:12px;color:var(--ink-2);padding-left:16px;line-height:2}
+
+    /* Footer */
+    footer{border-top:1.5px solid var(--border);padding:20px 0;text-align:center;background:var(--parch-2)}
+    footer p{font-size:11px;color:var(--ink-3);line-height:2}
+    footer a{color:var(--green);text-decoration:none}
+
+    .hidden{display:none!important}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .pulsing{animation:pulse 1s infinite}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="hd">
+      <div class="logo">
+        <div class="logo-g">ب</div>
+        <div>
+          <h1>Ajami Translator</h1>
+          <p>Audio Contribution</p>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a class="nav-link" href="index.html">⬅ Translator</a>
+        <a class="nav-link" href="https://github.com/amshoo/ajami-translator" target="_blank">★ GitHub</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <section class="hero">
+      <p class="hero-eye">Community Contribution</p>
+      <h2>Record Hausa Pronunciation</h2>
+      <p>Help build an open audio dataset for Hausa Ajami. Record each word clearly, download the file, and upload it to GitHub. No technical knowledge required.</p>
+    </section>
+
+    <!-- Progress -->
+    <div class="progress-card">
+      <div class="progress-header">
+        <span class="progress-title">🎙️ Recording Progress</span>
+        <span class="progress-nums" id="prog-nums">Loading…</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="prog-bar" style="width:0%"></div>
+      </div>
+      <div class="progress-cats" id="prog-cats"></div>
+    </div>
+
+    <!-- How it works -->
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Pick a word</h3>
+        <p>Click any word below that is missing audio (shown in yellow). Words with audio show in green.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Record it</h3>
+        <p>Click Record, say the word clearly once, then click Stop. Play it back to check quality.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Download</h3>
+        <p>Click Download — the file is already named correctly (e.g. <code style="font-size:11px">gida.mp3</code>). No renaming needed.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h3>Upload to GitHub</h3>
+        <p>Follow the one-click GitHub upload instructions shown after downloading. The dictionary updates automatically.</p>
+      </div>
+    </div>
+
+    <!-- Recording panel (shown when a word is selected) -->
+    <div class="rec-panel" id="rec-panel">
+      <div class="rec-header">
+        <div class="rec-word">
+          <span id="rec-en"></span>
+          <span class="ajami" id="rec-aj"></span>
+          <small style="font-size:13px;color:var(--ink-3);font-family:var(--fl);direction:ltr" id="rec-ha"></small>
+        </div>
+        <button class="rec-close" id="rec-close" title="Close">✕</button>
+      </div>
+
+      <div class="rec-guide">
+        <strong>How to record:</strong> Sit in a quiet place. Say the Hausa word <strong id="guide-ha"></strong> clearly, at natural speed, once. Aim for 1–3 seconds. Avoid background noise, echo, and breathing sounds at the start.
+      </div>
+
+      <div class="waveform"><canvas id="wave-canvas"></canvas></div>
+
+      <div class="rec-controls">
+        <button class="rec-btn start" id="rec-start">⏺ Record</button>
+        <button class="rec-btn stop" id="rec-stop" disabled>⏹ Stop</button>
+        <button class="rec-btn play" id="rec-play" disabled>▶ Play back</button>
+        <span class="rec-timer" id="rec-timer">0.0s</span>
+        <span class="rec-status" id="rec-status">Ready to record</span>
+      </div>
+
+      <div class="dl-section" id="dl-section">
+        <div class="dl-title">Step 3 — Download your recording</div>
+        <a class="dl-btn" id="dl-btn" style="pointer-events:none;opacity:.4">⬇ Download <span id="dl-filename"></span></a>
+
+        <div class="pr-steps">
+          <h4>Step 4 — Upload to GitHub (takes 2 minutes)</h4>
+          <div class="pr-step">
+            <div class="pr-step-num">1</div>
+            <div class="pr-step-body">
+              Go to the <a href="https://github.com/amshoo/ajami-translator/upload/main/audio" target="_blank">audio folder on GitHub</a> — you need a free GitHub account.
+            </div>
+          </div>
+          <div class="pr-step">
+            <div class="pr-step-num">2</div>
+            <div class="pr-step-body">
+              Drag and drop your downloaded file (<code id="pr-filename"></code>) into the upload area. The filename must stay exactly as downloaded.
+            </div>
+          </div>
+          <div class="pr-step">
+            <div class="pr-step-num">3</div>
+            <div class="pr-step-body">
+              Scroll down, write a commit message like <code>Add audio: <span id="pr-word"></span></code>, then click <strong>Propose changes</strong> → <strong>Create pull request</strong>.
+            </div>
+          </div>
+          <div class="pr-step">
+            <div class="pr-step-num">4</div>
+            <div class="pr-step-body">
+              That's it! The maintainer will merge your PR and the audio will go live for everyone. <strong>No JSON editing needed</strong> — the filename matches the entry automatically.
+            </div>
+          </div>
+        </div>
+
+        <div class="quality-tips">
+          <h4>🎙️ RECORDING QUALITY TIPS</h4>
+          <ul>
+            <li>Use a phone or laptop microphone in a quiet room</li>
+            <li>Say the word once, naturally — not too slow or exaggerated</li>
+            <li>Avoid starting with breath noise — pause 0.5s before speaking</li>
+            <li>If you make a mistake, just click Record again</li>
+            <li>Native Hausa speakers preferred, but all contributions welcome</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <span class="filter-label">Show</span>
+      <div class="f-tab active" data-filter="missing">Missing audio</div>
+      <div class="f-tab" data-filter="done">Has audio</div>
+      <div class="f-tab" data-filter="all">All words</div>
+      <div class="search-wrap">
+        <input type="text" class="f-search" id="word-search" placeholder="Search…"/>
+      </div>
+    </div>
+
+    <!-- Category filter -->
+    <div class="filters" style="margin-top:-8px">
+      <span class="filter-label">Category</span>
+      <div class="f-tab active" data-cat="All">All</div>
+    </div>
+
+    <!-- Word grid -->
+    <div class="word-grid" id="word-grid"></div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>
+      Part of the <strong>Ajami Suite</strong> — open tools for digital Ajami literacy.<br/>
+      All audio recordings contributed here are released under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC-BY 4.0</a> — free for everyone to use.<br/>
+      <a href="index.html">← Back to Translator</a> ·
+      <a href="https://github.com/amshoo/ajami-translator" target="_blank">GitHub</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// ── Transliteration (same engine as index.html) ───────────────────────────
+const PM=[
+  {l:'ɓ',a:'ٻ'},{l:'ɗ',a:'ڟ'},{l:'ƙ',a:'ڧ'},{l:'ƴ',a:'ۑ'},
+  {l:'sh',a:'ش'},{l:'ts',a:'ط'},{l:'kw',a:'كو'},{l:'gw',a:'ݣو'},
+  {l:'aa',a:'ا'},{l:'ii',a:'ي'},{l:'uu',a:'و'},
+  {l:'a',a:'َ'},{l:'e',a:'ٜ'},{l:'i',a:'ِ'},{l:'u',a:'ُ'},{l:'o',a:'ُو'},
+  {l:'b',a:'ب'},{l:'t',a:'ت'},{l:'j',a:'ج'},{l:'h',a:'ه'},{l:'d',a:'د'},
+  {l:'r',a:'ر'},{l:'z',a:'ز'},{l:'s',a:'س'},{l:'f',a:'ڢ'},{l:'k',a:'ك'},
+  {l:'l',a:'ل'},{l:'m',a:'م'},{l:'n',a:'ن'},{l:'w',a:'و'},{l:'y',a:'ي'},
+  {l:'g',a:'ݣ'},{l:'c',a:'ج'},{l:"'",a:'ع'},
+];
+function toAjami(ha){
+  return ha.split(' ').map(w=>{
+    let r='',i=0,c=w.replace(/['']/g,"'");
+    while(i<c.length){let m=false;for(const {l,a} of PM){if(c.slice(i,i+l.length).toLowerCase()===l){r+=a;i+=l.length;m=true;break;}}if(!m)i++;}
+    return r.replace(/ن$/,'ں');
+  }).join(' ');
+}
+
+// ── State ─────────────────────────────────────────────────────────────────
+let DICT = [];
+let activeFilter = 'missing';
+let activeCat = 'All';
+let searchQ = '';
+let selectedWord = null;
+let mediaRecorder = null;
+let audioChunks = [];
+let recordedBlob = null;
+let timerInterval = null;
+let startTime = 0;
+let animFrame = null;
+let audioCtx = null;
+let analyser = null;
+let sourceNode = null;
+
+// ── Load dictionary ───────────────────────────────────────────────────────
+async function loadDict() {
+  try {
+    const res = await fetch('dictionary.json');
+    DICT = await res.json();
+  } catch(e) {
+    alert('Could not load dictionary.json — make sure both files are in the same folder.');
+    return;
+  }
+  DICT.forEach(e => { if(!e.ajm) e.ajm = toAjami(e.ha); });
+  buildCatTabs();
+  renderGrid();
+  updateProgress();
+}
+
+// ── Progress ──────────────────────────────────────────────────────────────
+function updateProgress() {
+  // In a real deployment, we'd check which files exist on GitHub.
+  // Here we show progress based on audio field being non-empty beyond the placeholder.
+  // Since all entries now have a pre-filled filename, we show the total and
+  // let contributors know how many they've uploaded via GitHub.
+  const total = DICT.length;
+  const hasAudio = DICT.filter(e => e._recorded).length; // tracked locally in session
+
+  document.getElementById('prog-nums').innerHTML =
+    `<span>${hasAudio}</span> of ${total} words recorded this session`;
+  document.getElementById('prog-bar').style.width = `${(hasAudio/total)*100}%`;
+
+  // Category breakdown
+  const cats = [...new Set(DICT.map(e => e.cat))];
+  const container = document.getElementById('prog-cats');
+  container.innerHTML = '';
+  cats.forEach(cat => {
+    const catWords = DICT.filter(e => e.cat === cat);
+    const done = catWords.filter(e => e._recorded).length;
+    const el = document.createElement('div');
+    el.className = 'pcat ' + (done === catWords.length ? 'done' : done > 0 ? 'partial' : '');
+    el.textContent = `${cat} ${done}/${catWords.length}`;
+    container.appendChild(el);
+  });
+}
+
+// ── Category tabs ─────────────────────────────────────────────────────────
+function buildCatTabs() {
+  const cats = ['All', ...new Set(DICT.map(e => e.cat))];
+  const row = document.querySelectorAll('.filters')[1];
+  // Remove existing cat tabs (keep label)
+  [...row.querySelectorAll('.f-tab')].forEach(t => t.remove());
+  cats.forEach(cat => {
+    const t = document.createElement('div');
+    t.className = 'f-tab' + (cat === 'All' ? ' active' : '');
+    t.dataset.cat = cat;
+    t.textContent = cat;
+    t.addEventListener('click', () => {
+      activeCat = cat;
+      row.querySelectorAll('.f-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      renderGrid();
+    });
+    row.appendChild(t);
+  });
+}
+
+// ── Filter tabs ───────────────────────────────────────────────────────────
+document.querySelectorAll('.f-tab[data-filter]').forEach(t => {
+  t.addEventListener('click', () => {
+    activeFilter = t.dataset.filter;
+    document.querySelectorAll('.f-tab[data-filter]').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    renderGrid();
+  });
+});
+
+document.getElementById('word-search').addEventListener('input', e => {
+  searchQ = e.target.value.toLowerCase();
+  renderGrid();
+});
+
+// ── Word grid ─────────────────────────────────────────────────────────────
+function renderGrid() {
+  const grid = document.getElementById('word-grid');
+  let filtered = DICT.filter(e => {
+    if (activeCat !== 'All' && e.cat !== activeCat) return false;
+    if (searchQ && !e.en.includes(searchQ) && !e.ha.includes(searchQ)) return false;
+    if (activeFilter === 'missing') return !e._recorded;
+    if (activeFilter === 'done') return !!e._recorded;
+    return true;
+  });
+
+  grid.innerHTML = '';
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--ink-3)">No words match your filters.</div>';
+    return;
+  }
+
+  filtered.forEach(entry => {
+    const card = document.createElement('div');
+    card.className = 'word-card' + (entry._recorded ? ' has-audio' : '') +
+                     (selectedWord === entry ? ' selected' : '');
+    // Extract filename from audio path
+    const filename = entry.audio.split('/').pop();
+    card.innerHTML = `
+      <div class="wc-en">${entry.cat} · ${entry.en}</div>
+      <div class="wc-ha">${entry.ha}</div>
+      <div class="wc-aj">${entry.ajm || toAjami(entry.ha)}</div>
+      <div class="wc-file">${filename}</div>
+      <div class="wc-badge ${entry._recorded ? 'done' : 'missing'}">
+        ${entry._recorded ? '✓ Recorded this session' : '○ Needs audio'}
+      </div>
+    `;
+    card.addEventListener('click', () => selectWord(entry));
+    grid.appendChild(card);
+  });
+}
+
+// ── Select word ───────────────────────────────────────────────────────────
+function selectWord(entry) {
+  selectedWord = entry;
+  const panel = document.getElementById('rec-panel');
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const filename = entry.audio.split('/').pop();
+  document.getElementById('rec-en').textContent = entry.en;
+  document.getElementById('rec-aj').textContent = entry.ajm || toAjami(entry.ha);
+  document.getElementById('rec-ha').textContent = entry.ha;
+  document.getElementById('guide-ha').textContent = entry.ha;
+  document.getElementById('dl-filename').textContent = filename;
+  document.getElementById('pr-filename').textContent = filename;
+  document.getElementById('pr-word').textContent = entry.ha;
+
+  // Reset recording state
+  resetRecorder();
+  renderGrid();
+}
+
+// ── Recording ─────────────────────────────────────────────────────────────
+function resetRecorder() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  clearInterval(timerInterval);
+  if (animFrame) cancelAnimationFrame(animFrame);
+  recordedBlob = null;
+  audioChunks = [];
+  document.getElementById('rec-start').disabled = false;
+  document.getElementById('rec-stop').disabled = true;
+  document.getElementById('rec-play').disabled = true;
+  document.getElementById('rec-timer').textContent = '0.0s';
+  document.getElementById('rec-status').textContent = 'Ready to record';
+  document.getElementById('rec-status').className = 'rec-status';
+  document.getElementById('dl-btn').style.pointerEvents = 'none';
+  document.getElementById('dl-btn').style.opacity = '.4';
+  clearWaveform();
+}
+
+document.getElementById('rec-close').addEventListener('click', () => {
+  document.getElementById('rec-panel').classList.remove('visible');
+  resetRecorder();
+  selectedWord = null;
+  renderGrid();
+});
+
+document.getElementById('rec-start').addEventListener('click', async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioCtx = new AudioContext();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    sourceNode = audioCtx.createMediaStreamSource(stream);
+    sourceNode.connect(analyser);
+    drawWaveform();
+
+    // Try to get mp3, fall back to webm/ogg
+    const mimeType = MediaRecorder.isTypeSupported('audio/mp3') ? 'audio/mp3'
+                   : MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm'
+                   : 'audio/ogg';
+
+    mediaRecorder = new MediaRecorder(stream, { mimeType });
+    audioChunks = [];
+    mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      recordedBlob = new Blob(audioChunks, { type: mimeType });
+      stream.getTracks().forEach(t => t.stop());
+      if (audioCtx) { audioCtx.close(); audioCtx = null; }
+      if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+
+      document.getElementById('rec-play').disabled = false;
+      document.getElementById('rec-status').textContent = 'Recording saved — play it back!';
+      document.getElementById('rec-status').className = 'rec-status done';
+
+      // Enable download
+      const filename = selectedWord.audio.split('/').pop();
+      const url = URL.createObjectURL(recordedBlob);
+      const dlBtn = document.getElementById('dl-btn');
+      dlBtn.href = url;
+      dlBtn.download = filename;
+      dlBtn.style.pointerEvents = 'auto';
+      dlBtn.style.opacity = '1';
+
+      // Mark as recorded in session
+      selectedWord._recorded = true;
+      updateProgress();
+      renderGrid();
+    };
+
+    mediaRecorder.start();
+    startTime = Date.now();
+    document.getElementById('rec-start').disabled = true;
+    document.getElementById('rec-stop').disabled = false;
+    document.getElementById('rec-status').textContent = '⏺ Recording…';
+    document.getElementById('rec-status').className = 'rec-status recording pulsing';
+
+    timerInterval = setInterval(() => {
+      const elapsed = (Date.now() - startTime) / 1000;
+      document.getElementById('rec-timer').textContent = elapsed.toFixed(1) + 's';
+      // Auto-stop at 10 seconds
+      if (elapsed >= 10) document.getElementById('rec-stop').click();
+    }, 100);
+
+  } catch(err) {
+    alert('Microphone access denied. Please allow microphone access in your browser settings and try again.');
+  }
+});
+
+document.getElementById('rec-stop').addEventListener('click', () => {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    clearInterval(timerInterval);
+    mediaRecorder.stop();
+    document.getElementById('rec-start').disabled = false;
+    document.getElementById('rec-stop').disabled = true;
+  }
+});
+
+document.getElementById('rec-play').addEventListener('click', () => {
+  if (!recordedBlob) return;
+  const url = URL.createObjectURL(recordedBlob);
+  const audio = new Audio(url);
+  audio.play();
+  document.getElementById('rec-status').textContent = '▶ Playing back…';
+  audio.onended = () => {
+    document.getElementById('rec-status').textContent = '✓ Playback done — download when ready';
+    document.getElementById('rec-status').className = 'rec-status done';
+  };
+});
+
+// ── Waveform visualizer ───────────────────────────────────────────────────
+function drawWaveform() {
+  const canvas = document.getElementById('wave-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  function draw() {
+    animFrame = requestAnimationFrame(draw);
+    if (!analyser) return;
+    const buf = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteTimeDomainData(buf);
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--parch-2').trim();
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#2A7A40';
+    ctx.beginPath();
+    const sliceWidth = canvas.width / buf.length;
+    let x = 0;
+    for (let i = 0; i < buf.length; i++) {
+      const v = buf[i] / 128;
+      const y = (v * canvas.height) / 2;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      x += sliceWidth;
+    }
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    ctx.stroke();
+  }
+  draw();
+}
+
+function clearWaveform() {
+  const canvas = document.getElementById('wave-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth || 400;
+  canvas.height = canvas.offsetHeight || 60;
+  ctx.fillStyle = '#F3EDE0';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Draw flat line
+  ctx.strokeStyle = '#D8CEBC';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height / 2);
+  ctx.lineTo(canvas.width, canvas.height / 2);
+  ctx.stroke();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+clearWaveform();
+loadDict();
+</script>
+</body>
+</html>
