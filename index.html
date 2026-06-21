@@ -1,576 +1,207 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ajami Translator — English to Hausa Ajami</title>
-  <meta name="description" content="Translate English text into Hausa Ajami script — the Arabic-derived writing system used by Hausa speakers for centuries." />
-
-  <!-- Google Fonts: Noto Naskh for Arabic/Ajami, Inter for Latin -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ajami Translator — English ↔ Hausa Ajami</title>
+  <meta name="description" content="Translate between English and Hausa Ajami script."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
-    /* ── Design tokens ─────────────────────────────────────────────── */
     :root {
-      --green-900: #0d2e18;
-      --green-800: #1C5E2C;
-      --green-600: #30B050;
-      --green-400: #5DCB7A;
-      --green-100: #AADDbb;
-      --green-50:  #e8f5ec;
-
-      --gold:      #D4A017;
-      --gold-light:#FFF0C0;
-
-      --ink:       #0a0a0a;
-      --surface:   #111613;
-      --panel:     #191f1b;
-      --border:    #243028;
-      --muted:     #5a6b60;
-      --light:     #c8d8cc;
-      --white:     #ffffff;
-
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 22px;
-
-      --font-latin: 'Inter', system-ui, sans-serif;
-      --font-ajami: 'Noto Naskh Arabic', 'Traditional Arabic', serif;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--font-latin);
-      background: var(--surface);
-      color: var(--light);
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-
-    /* ── Layout ─────────────────────────────────────────────────────── */
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* ── Header ─────────────────────────────────────────────────────── */
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 20px 0;
-    }
-
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .logo-glyph {
-      font-family: var(--font-ajami);
-      font-size: 36px;
-      color: var(--green-600);
-      line-height: 1;
-      background: var(--green-900);
-      width: 52px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--green-800);
-    }
-
-    .logo-text h1 {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: -0.3px;
-    }
-
-    .logo-text p {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 1px;
-    }
-
-    .suite-links {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .suite-link {
-      font-size: 12px;
-      color: var(--muted);
-      text-decoration: none;
-      padding: 4px 10px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      transition: all 0.2s;
-    }
-
-    .suite-link:hover {
-      color: var(--green-400);
-      border-color: var(--green-800);
-    }
-
-    /* ── Hero ───────────────────────────────────────────────────────── */
-    .hero {
-      padding: 52px 0 36px;
-      text-align: center;
-    }
-
-    .hero-eyebrow {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--green-600);
-      margin-bottom: 14px;
-    }
-
-    .hero h2 {
-      font-size: clamp(28px, 5vw, 44px);
-      font-weight: 700;
-      color: var(--white);
-      line-height: 1.2;
-      letter-spacing: -0.5px;
-      margin-bottom: 14px;
-    }
-
-    /* The signature element: Ajami script in the headline */
-    .hero h2 .ajami-inline {
-      font-family: var(--font-ajami);
-      color: var(--green-400);
-      font-size: 1.1em;
-    }
-
-    .hero p {
-      font-size: 15px;
-      color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto;
-    }
-
-    /* ── Language selector ───────────────────────────────────────────── */
-    .lang-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin: 0 0 24px;
-      flex-wrap: wrap;
-    }
-
-    .lang-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 24px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      color: var(--light);
-      user-select: none;
-    }
-
-    .lang-pill.active {
-      background: var(--green-900);
-      border-color: var(--green-600);
-      color: var(--green-400);
-    }
-
-    .lang-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--muted);
-    }
-
-    .lang-pill.active .lang-dot {
-      background: var(--green-600);
-    }
-
-    .lang-arrow {
-      color: var(--muted);
-      font-size: 18px;
-    }
-
-    /* ── Translator card ─────────────────────────────────────────────── */
-    .translator {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      margin-bottom: 32px;
-    }
-
-    .panes {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 220px;
-    }
-
-    @media (max-width: 600px) {
-      .panes { grid-template-columns: 1fr; }
-      .pane-divider { display: none; }
-    }
-
-    .pane {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .pane-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .pane-divider {
-      width: 1px;
-      background: var(--border);
-      align-self: stretch;
-    }
-
-    /* Input pane */
-    #input-text {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      font-family: var(--font-latin);
-      font-size: 16px;
-      color: var(--white);
-      resize: none;
-      min-height: 160px;
-      line-height: 1.6;
-      caret-color: var(--green-600);
-    }
-
-    #input-text::placeholder { color: var(--muted); }
-
-    .char-count {
-      font-size: 11px;
-      color: var(--muted);
-      text-align: right;
-    }
-
-    .char-count.warning { color: var(--gold); }
-
-    /* Output pane */
-    .output-pane {
-      background: var(--green-900);
-      position: relative;
-    }
-
-    #hausa-output {
-      font-size: 15px;
-      color: var(--light);
-      line-height: 1.8;
-      flex: 1;
-      min-height: 80px;
-    }
-
-    #hausa-output.placeholder-text {
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    #ajami-output {
-      font-family: var(--font-ajami);
-      font-size: 26px;
-      color: var(--white);
-      direction: rtl;
-      line-height: 1.8;
-      flex: 1;
-      min-height: 80px;
-    }
-
-    #ajami-output.placeholder-text {
-      color: var(--muted);
-      font-size: 16px;
-      font-family: var(--font-latin);
-      font-style: italic;
-      direction: ltr;
-    }
-
-    /* ── Toolbar ─────────────────────────────────────────────────────── */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 20px;
-      border-top: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .toolbar-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.18s;
-      border: none;
-      font-family: var(--font-latin);
-    }
-
-    .btn-primary {
-      background: var(--green-600);
-      color: var(--white);
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: var(--green-400);
-      transform: translateY(-1px);
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-    }
-
-    .btn-ghost:hover {
-      color: var(--light);
-      border-color: var(--muted);
-    }
-
-    .btn-copy {
-      background: var(--green-900);
-      color: var(--green-400);
-      border: 1px solid var(--green-800);
-    }
-
-    .btn-copy:hover {
-      background: var(--green-800);
-    }
-
-    /* ── Status bar ──────────────────────────────────────────────────── */
-    .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      min-height: 40px;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--muted);
-      flex-shrink: 0;
-      transition: background 0.3s;
-    }
-
-    .status-dot.loading {
-      background: var(--gold);
-      animation: pulse 1s infinite;
-    }
-
-    .status-dot.success { background: var(--green-600); }
-    .status-dot.error   { background: #ff4444; }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    #status-text { color: var(--muted); }
-
-    /* ── Output section with two rows ───────────────────────────────── */
-    .output-section {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .output-row-label {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 2px;
-    }
-
-    .output-divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 10px 0;
-      opacity: 0.5;
-    }
-
-    /* ── Info cards ──────────────────────────────────────────────────── */
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin: 32px 0;
-    }
-
-    .info-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 20px;
-    }
-
-    .info-card-icon {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    .info-card h3 {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 6px;
-    }
-
-    .info-card p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    /* ── Examples ────────────────────────────────────────────────────── */
-    .examples-section {
-      margin: 16px 0 40px;
-    }
-
-    .examples-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    .examples-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .example-chip {
-      padding: 6px 14px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 13px;
-      color: var(--light);
-      cursor: pointer;
-      transition: all 0.18s;
-      background: var(--panel);
-    }
-
-    .example-chip:hover {
-      border-color: var(--green-600);
-      color: var(--green-400);
-      background: var(--green-900);
-    }
-
-    /* ── Footer ─────────────────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 24px 0;
-      text-align: center;
-    }
-
-    footer p {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    footer a {
-      color: var(--green-400);
-      text-decoration: none;
-    }
-
-    footer a:hover { text-decoration: underline; }
-
-    /* ── Loading spinner ─────────────────────────────────────────────── */
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid var(--border);
-      border-top-color: var(--green-600);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: none;
-    }
-
-    .spinner.active { display: inline-block; }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Transliteration note ────────────────────────────────────────── */
-    .transliteration-note {
-      font-size: 11px;
-      color: var(--muted);
-      font-style: italic;
-      margin-top: 4px;
-    }
+      /* Parchment palette */
+      --parch:    #FAF7F0;
+      --parch-2:  #F3EDE0;
+      --parch-3:  #E8DFC8;
+      --ink:      #1A1208;
+      --ink-2:    #4A3F28;
+      --ink-3:    #7A6A4A;
+      --green:    #2A7A40;
+      --green-l:  #3DA055;
+      --green-bg: #EBF5EE;
+      --green-brd:#B8DEC4;
+      --gold:     #C08020;
+      --gold-bg:  #FDF3DC;
+      --gold-brd: #E8C870;
+      --red:      #B83030;
+      --red-bg:   #FDF0EE;
+      --border:   #D8CEBC;
+      --border-l: #EDE5D4;
+      --shadow:   0 2px 8px rgba(80,60,20,.10);
+      --shadow-lg:0 4px 20px rgba(80,60,20,.14);
+      --r-sm: 8px; --r-md: 14px; --r-lg: 20px;
+      --fl: 'Inter', system-ui, sans-serif;
+      --fd: 'Lora', Georgia, serif;
+      --fa: 'Noto Naskh Arabic','Traditional Arabic',serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--fl);background:var(--parch);color:var(--ink);min-height:100vh;line-height:1.6}
+    .container{max-width:940px;margin:0 auto;padding:0 20px}
+
+    /* ── Header ── */
+    header{background:#fff;border-bottom:1px solid var(--border);padding:14px 0;box-shadow:var(--shadow)}
+    .hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo-g{font-family:var(--fa);font-size:28px;color:#fff;background:var(--green);width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-sm);box-shadow:var(--shadow)}
+    .logo h1{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ink)}
+    .logo p{font-size:11px;color:var(--ink-3)}
+    .suite-links{display:flex;gap:6px;flex-wrap:wrap}
+    .suite-link{font-size:11px;color:var(--ink-3);text-decoration:none;padding:4px 11px;border:1px solid var(--border);border-radius:20px;background:#fff;transition:all .2s}
+    .suite-link:hover{color:var(--green);border-color:var(--green-brd);background:var(--green-bg)}
+
+    /* ── Hero ── */
+    .hero{padding:36px 0 28px;text-align:center}
+    .hero-eye{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+    .hero h2{font-family:var(--fd);font-size:clamp(24px,4vw,40px);font-weight:700;color:var(--ink);line-height:1.25;margin-bottom:10px}
+    .ajami-hl{font-family:var(--fa);color:var(--green);font-size:1.15em}
+    .hero p{font-size:14px;color:var(--ink-2);max-width:500px;margin:0 auto}
+
+    /* ── Mode switcher ── */
+    .mode-bar{display:flex;gap:0;margin:0 auto 24px;border:1.5px solid var(--border);border-radius:var(--r-md);overflow:hidden;width:fit-content;background:#fff;box-shadow:var(--shadow)}
+    .mode-btn{padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--ink-3);font-family:var(--fl);transition:all .2s;display:flex;align-items:center;gap:7px}
+    .mode-btn.active{background:var(--green);color:#fff}
+    .mode-btn:not(:last-child){border-right:1px solid var(--border)}
+
+    /* ── Lang bar ── */
+    .lang-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 18px;flex-wrap:wrap}
+    .lang-pill{display:flex;align-items:center;gap:7px;padding:7px 16px;border-radius:24px;font-size:12px;font-weight:600;border:1.5px solid var(--green-brd);background:var(--green-bg);color:var(--green)}
+    .lang-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+    .lang-arrow{color:var(--ink-3);font-size:16px}
+
+    /* ── Translator card ── */
+    .translator{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow-lg)}
+
+    /* Pane header bars */
+    .pane-header{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-bottom:1px solid var(--border-l);background:var(--parch-2)}
+    .pane-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink-3)}
+    .pane-actions{display:flex;gap:5px}
+
+    .panes{display:grid;grid-template-columns:1fr 1px 1fr}
+    @media(max-width:600px){.panes{grid-template-columns:1fr}.pane-div{display:none}}
+    .pane{display:flex;flex-direction:column}
+    .pane-div{background:var(--border)}
+
+    /* Input area */
+    .pane-body{padding:18px;flex:1;display:flex;flex-direction:column;gap:10px}
+    textarea.inp{flex:1;background:transparent;border:none;outline:none;font-family:var(--fl);font-size:16px;color:var(--ink);resize:none;min-height:150px;line-height:1.7;caret-color:var(--green)}
+    textarea.inp::placeholder{color:var(--ink-3);opacity:.6}
+    textarea.ajami-inp{font-family:var(--fa);font-size:26px;direction:rtl;line-height:1.8}
+    .char-c{font-size:10px;color:var(--ink-3);text-align:right;opacity:.7}
+    .char-c.warn{color:var(--gold);opacity:1}
+
+    /* Output area */
+    .out-pane .pane-body{background:var(--parch-2)}
+    .out-sec{margin-bottom:14px}
+    .out-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+    .out-hausa{font-size:15px;color:var(--ink-2);line-height:1.8;min-height:44px;font-style:italic}
+    .out-hausa.has-val{font-style:normal;color:var(--ink)}
+    .out-hausa.ph{color:var(--ink-3);opacity:.6}
+    .out-ajami{font-family:var(--fa);font-size:30px;color:var(--green);direction:rtl;line-height:1.9;min-height:52px;font-weight:500}
+    .out-ajami.ph{color:var(--ink-3);opacity:.5;font-size:16px;font-family:var(--fl);font-style:italic;direction:ltr}
+    .out-note{font-size:10px;color:var(--ink-3);margin-top:4px;font-style:italic}
+    .out-sep{border:none;border-top:1px solid var(--border);margin:14px 0}
+
+    /* Reverse output */
+    .out-rev-ha{font-family:var(--fa);font-size:26px;color:var(--ink);direction:rtl;line-height:1.9;min-height:44px}
+    .out-rev-ha.ph{color:var(--ink-3);opacity:.5;font-size:14px;font-family:var(--fl);font-style:italic;direction:ltr}
+    .out-rev-en{font-size:22px;font-weight:600;color:var(--green);min-height:36px;line-height:1.5}
+    .out-rev-en.ph{color:var(--ink-3);opacity:.5;font-size:14px;font-weight:400;font-style:italic}
+
+    /* Toolbar */
+    .toolbar{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;border-top:1px solid var(--border-l);background:var(--parch-2);flex-wrap:wrap;gap:8px}
+    .tl,.tr{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 15px;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;border:none;font-family:var(--fl);letter-spacing:.2px}
+    .btn-p{background:var(--green);color:#fff;box-shadow:0 1px 4px rgba(42,122,64,.25)}
+    .btn-p:hover{background:var(--green-l);transform:translateY(-1px)}
+    .btn-p:disabled{opacity:.4;cursor:not-allowed;transform:none}
+    .btn-gh{background:#fff;color:var(--ink-2);border:1.5px solid var(--border)}
+    .btn-gh:hover{border-color:var(--ink-3);color:var(--ink)}
+    .btn-cp{background:var(--green-bg);color:var(--green);border:1px solid var(--green-brd)}
+    .btn-cp:hover{background:var(--green-brd)}
+    .btn-aud{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-brd);padding:6px 10px;font-size:13px}
+    .btn-aud:hover{background:var(--gold-brd)}
+
+    /* Status */
+    .status{display:flex;align-items:center;gap:8px;padding:9px 18px;border-top:1px solid var(--border-l);font-size:11px;background:#fff}
+    .s-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0}
+    .s-dot.ok{background:var(--green)}.s-dot.err{background:var(--red)}.s-dot.warn{background:var(--gold)}
+    .s-txt{color:var(--ink-3)}
+
+    /* Breakdown */
+    .bd-sec{margin:0 0 22px}
+    .bd-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+    .bd-grid{display:flex;flex-wrap:wrap;gap:8px}
+    .wc{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-md);padding:12px 14px;min-width:100px;cursor:pointer;transition:all .18s;box-shadow:var(--shadow)}
+    .wc:hover{border-color:var(--green-brd);box-shadow:var(--shadow-lg)}
+    .wc.found{border-color:var(--green-brd);background:var(--green-bg)}
+    .wc.nf{border-color:var(--gold-brd);background:var(--gold-bg)}
+    .wc .we{font-size:10px;color:var(--ink-3);margin-bottom:3px}
+    .wc .wh{font-size:13px;color:var(--ink);font-weight:500}
+    .wc .wa{font-family:var(--fa);font-size:20px;color:var(--green);direction:rtl;margin-top:3px}
+    .wc .wd-aud{font-size:11px;color:var(--ink-3);cursor:pointer;margin-top:5px;display:inline-block;border:1px solid var(--border);border-radius:4px;padding:1px 6px;background:#fff}
+    .wc .wd-aud:hover{color:var(--green);border-color:var(--green-brd)}
+    .wc.nf .wh{color:var(--gold);font-style:italic;font-size:11px}
+
+    /* Examples */
+    .ex-sec{margin:10px 0 22px}
+    .ex-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+    .ex-row{display:flex;flex-wrap:wrap;gap:7px}
+    .ex-chip{padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;color:var(--ink-2);cursor:pointer;transition:all .18s;background:#fff;box-shadow:var(--shadow)}
+    .ex-chip:hover{border-color:var(--green-brd);color:var(--green);background:var(--green-bg)}
+
+    /* Dictionary */
+    .dict-sec{margin:0 0 36px}
+    .dict-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+    .dict-hd h3{font-family:var(--fd);font-size:16px;font-weight:600;color:var(--ink)}
+    .dict-count{font-size:11px;color:var(--ink-3)}
+    .dict-srch{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:7px 12px;font-size:12px;color:var(--ink);outline:none;font-family:var(--fl);width:200px;box-shadow:var(--shadow)}
+    .dict-srch:focus{border-color:var(--green-brd)}
+    .cat-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+    .ct{padding:5px 13px;border:1.5px solid var(--border);border-radius:20px;font-size:11px;font-weight:500;color:var(--ink-3);cursor:pointer;transition:all .18s;background:#fff}
+    .ct.active,.ct:hover{border-color:var(--green-brd);color:var(--green);background:var(--green-bg)}
+    .dict-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px}
+    .de{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:11px 12px;cursor:pointer;transition:all .18s;box-shadow:var(--shadow)}
+    .de:hover{border-color:var(--green-brd);background:var(--green-bg);box-shadow:var(--shadow-lg)}
+    .de .de-en{font-size:10px;color:var(--ink-3);margin-bottom:2px}
+    .de .de-ha{font-size:13px;color:var(--ink);font-weight:500}
+    .de .de-aj{font-family:var(--fa);font-size:18px;color:var(--green);direction:rtl;margin-top:3px}
+    .de .de-aud{font-size:10px;color:var(--ink-3);margin-top:4px}
+    .de .de-aud.has-audio{color:var(--green);cursor:pointer}
+    .de .de-aud.has-audio:hover{text-decoration:underline}
+
+    /* Info */
+    .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:22px 0 32px}
+    .ic{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-md);padding:18px;box-shadow:var(--shadow)}
+    .ic-icon{font-size:22px;margin-bottom:8px}
+    .ic h3{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:5px}
+    .ic p{font-size:12px;color:var(--ink-2);line-height:1.6}
+
+    footer{border-top:1.5px solid var(--border);padding:22px 0;text-align:center;background:var(--parch-2)}
+    footer p{font-size:11px;color:var(--ink-3);line-height:2}
+    footer a{color:var(--green);text-decoration:none}
+    footer a:hover{text-decoration:underline}
+
+    .hidden{display:none!important}
+    .contribute-note{background:var(--gold-bg);border:1px solid var(--gold-brd);border-radius:var(--r-sm);padding:10px 14px;font-size:12px;color:var(--ink-2);margin-bottom:8px}
+    .contribute-note a{color:var(--gold);font-weight:600}
   </style>
 </head>
-
 <body>
 
 <header>
   <div class="container">
-    <div class="header-inner">
+    <div class="hd">
       <div class="logo">
-        <div class="logo-glyph">ب</div>
-        <div class="logo-text">
+        <div class="logo-g">ب</div>
+        <div>
           <h1>Ajami Translator</h1>
           <p>Part of the Ajami Suite</p>
         </div>
       </div>
       <nav class="suite-links">
         <a class="suite-link" href="https://github.com/amshoo/ajami-keyboard">⌨ Keyboard</a>
-		<a class="suite-link" href="https://github.com/amshoo/ajami-learn">📚 Learn</a>
+        <a class="suite-link" href="https://github.com/amshoo/ajami-learn">📚 Learn</a>
         <a class="suite-link" href="https://github.com/amshoo/ajami-translator">★ GitHub</a>
       </nav>
     </div>
@@ -580,123 +211,187 @@
 <main>
   <div class="container">
 
-    <!-- Hero -->
     <section class="hero">
-      <p class="hero-eyebrow">Hausa Ajami Script</p>
-      <h2>Type in English,<br>read in <span class="ajami-inline">أَجَامِي</span></h2>
-      <p>Translate English into Hausa, then render it in Ajami — the Arabic-derived script Hausa scholars have used since the 17th century.</p>
+      <p class="hero-eye">Hausa Ajami Script</p>
+      <h2>Type in English,<br>read in <span class="ajami-hl">أَجَامِي</span></h2>
+      <p>Translate between English and Hausa Ajami — the Arabic-derived script Hausa scholars have used since the 17th century.</p>
     </section>
 
-    <!-- Language bar -->
-    <div class="lang-bar">
-      <div class="lang-pill active">
-        <div class="lang-dot"></div>
-        English
-      </div>
-      <span class="lang-arrow">→</span>
-      <div class="lang-pill active">
-        <div class="lang-dot"></div>
-        Hausa (Latin)
-      </div>
-      <span class="lang-arrow">→</span>
-      <div class="lang-pill active">
-        <div class="lang-dot"></div>
-        Hausa Ajami
-      </div>
+    <!-- Mode switcher -->
+    <div class="mode-bar">
+      <button class="mode-btn active" id="mode-fwd">🔤 English → Ajami</button>
+      <button class="mode-btn" id="mode-rev">📜 Ajami → English</button>
     </div>
 
-    <!-- Translator card -->
-    <div class="translator">
-      <div class="panes">
+    <!-- ── FORWARD MODE ── -->
+    <div id="fwd-mode">
+      <div class="lang-bar">
+        <div class="lang-pill"><div class="lang-dot"></div>English</div>
+        <span class="lang-arrow">→</span>
+        <div class="lang-pill"><div class="lang-dot"></div>Hausa</div>
+        <span class="lang-arrow">→</span>
+        <div class="lang-pill"><div class="lang-dot"></div>Ajami Script</div>
+      </div>
 
+      <div class="translator">
         <!-- Input pane -->
-        <div class="pane">
-          <span class="pane-label">English</span>
-          <textarea
-            id="input-text"
-            placeholder="Type or paste English text here…"
-            maxlength="500"
-            spellcheck="true"
-            autofocus
-          ></textarea>
-          <span class="char-count" id="char-count">0 / 500</span>
-        </div>
-
-        <div class="pane-divider"></div>
-
-        <!-- Output pane -->
-        <div class="pane output-pane">
-          <div class="output-section">
-            <span class="output-row-label">Hausa</span>
-            <div id="hausa-output" class="placeholder-text">Translation appears here</div>
+        <div class="panes">
+          <div class="pane">
+            <div class="pane-header">
+              <span class="pane-label">English</span>
+            </div>
+            <div class="pane-body">
+              <textarea class="inp" id="fwd-input" placeholder="Type English words…&#10;&#10;Examples: house, water, sun&#10;Works best word by word" maxlength="300" autofocus></textarea>
+              <span class="char-c" id="fwd-char">0 / 300</span>
+            </div>
           </div>
-          <hr class="output-divider" />
-          <div class="output-section">
-            <span class="output-row-label">Ajami Script</span>
-            <div id="ajami-output" class="placeholder-text">الكتابة العجمية تظهر هنا</div>
-            <p class="transliteration-note" id="transliteration-note"></p>
+          <div class="pane-div"></div>
+          <div class="pane out-pane">
+            <div class="pane-header">
+              <span class="pane-label">Hausa & Ajami</span>
+              <div class="pane-actions">
+                <button class="btn btn-aud" id="fwd-aud-ha" style="display:none" title="Hear Hausa">🔊</button>
+                <button class="btn btn-cp" id="fwd-cp-ha" style="display:none">Copy Hausa</button>
+                <button class="btn btn-cp" id="fwd-cp-aj" style="display:none">Copy Ajami</button>
+              </div>
+            </div>
+            <div class="pane-body">
+              <div class="out-sec">
+                <div class="out-lbl">Hausa (Latin)</div>
+                <div class="out-hausa ph" id="hausa-out">Translation appears here</div>
+              </div>
+              <hr class="out-sep"/>
+              <div class="out-sec">
+                <div class="out-lbl">Ajami Script</div>
+                <div class="out-ajami ph" id="ajami-out">الكتابة العجمية تظهر هنا</div>
+                <div class="out-note" id="fwd-note"></div>
+              </div>
+            </div>
           </div>
         </div>
-
+        <div class="toolbar">
+          <div class="tl">
+            <button class="btn btn-p" id="fwd-btn" disabled>Translate</button>
+            <button class="btn btn-gh" id="fwd-clear">Clear</button>
+          </div>
+          <div class="tr" id="fwd-tr"></div>
+        </div>
+        <div class="status">
+          <div class="s-dot" id="fwd-dot"></div>
+          <span class="s-txt" id="fwd-stxt">Ready — type English words above</span>
+        </div>
       </div>
 
-      <!-- Toolbar -->
-      <div class="toolbar">
-        <div class="toolbar-left">
-          <button class="btn btn-primary" id="translate-btn" disabled>
-            <div class="spinner" id="spinner"></div>
-            <span id="btn-label">Translate</span>
-          </button>
-          <button class="btn btn-ghost" id="clear-btn">Clear</button>
-        </div>
-        <div class="toolbar-right">
-          <button class="btn btn-copy" id="copy-hausa-btn" style="display:none">Copy Hausa</button>
-          &nbsp;
-          <button class="btn btn-copy" id="copy-ajami-btn" style="display:none">Copy Ajami</button>
-        </div>
+      <div class="bd-sec hidden" id="fwd-bd">
+        <div class="bd-lbl">Word by word</div>
+        <div class="bd-grid" id="fwd-bd-grid"></div>
       </div>
 
-      <!-- Status bar -->
-      <div class="status-bar">
-        <div class="status-dot" id="status-dot"></div>
-        <span id="status-text">Ready — enter English text above</span>
+      <div class="ex-sec">
+        <div class="ex-lbl">Try an example</div>
+        <div class="ex-row">
+          <div class="ex-chip">house water sun</div>
+          <div class="ex-chip">father mother child</div>
+          <div class="ex-chip">peace knowledge light</div>
+          <div class="ex-chip">one two three four five</div>
+          <div class="ex-chip">God is great</div>
+          <div class="ex-chip">road market farm</div>
+          <div class="ex-chip">book pen write</div>
+          <div class="ex-chip">morning night day</div>
+        </div>
       </div>
     </div>
 
-    <!-- Example phrases -->
-    <div class="examples-section">
-      <p class="examples-label">Try an example</p>
-      <div class="examples-row" id="examples-row">
-        <div class="example-chip">Peace be upon you</div>
-        <div class="example-chip">God is great</div>
-        <div class="example-chip">Knowledge is light</div>
-        <div class="example-chip">The water is cold</div>
-        <div class="example-chip">My father is a farmer</div>
-        <div class="example-chip">Where is the market?</div>
-        <div class="example-chip">The sun is rising</div>
-        <div class="example-chip">Thank you very much</div>
+    <!-- ── REVERSE MODE ── -->
+    <div id="rev-mode" class="hidden">
+      <div class="lang-bar">
+        <div class="lang-pill"><div class="lang-dot"></div>Hausa Ajami</div>
+        <span class="lang-arrow">→</span>
+        <div class="lang-pill"><div class="lang-dot"></div>Hausa</div>
+        <span class="lang-arrow">→</span>
+        <div class="lang-pill"><div class="lang-dot"></div>English</div>
+      </div>
+
+      <div class="translator">
+        <div class="panes">
+          <div class="pane">
+            <div class="pane-header">
+              <span class="pane-label">Ajami Script</span>
+            </div>
+            <div class="pane-body">
+              <textarea class="inp ajami-inp" id="rev-input" placeholder="بَبَ رُوَ رَنَ" maxlength="300"></textarea>
+              <span class="char-c" id="rev-char">0 / 300</span>
+            </div>
+          </div>
+          <div class="pane-div"></div>
+          <div class="pane out-pane">
+            <div class="pane-header">
+              <span class="pane-label">Hausa & English</span>
+              <div class="pane-actions">
+                <button class="btn btn-aud" id="rev-aud" style="display:none" title="Hear Hausa">🔊</button>
+                <button class="btn btn-cp" id="rev-cp-ha" style="display:none">Copy Hausa</button>
+                <button class="btn btn-cp" id="rev-cp-en" style="display:none">Copy English</button>
+              </div>
+            </div>
+            <div class="pane-body">
+              <div class="out-sec">
+                <div class="out-lbl">Hausa (Latin)</div>
+                <div class="out-rev-ha ph" id="rev-ha-out">Hausa appears here</div>
+              </div>
+              <hr class="out-sep"/>
+              <div class="out-sec">
+                <div class="out-lbl">English</div>
+                <div class="out-rev-en ph" id="rev-en-out">English meaning appears here</div>
+                <div class="out-note" id="rev-note"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="tl">
+            <button class="btn btn-p" id="rev-btn" disabled>Translate</button>
+            <button class="btn btn-gh" id="rev-clear">Clear</button>
+          </div>
+        </div>
+        <div class="status">
+          <div class="s-dot" id="rev-dot"></div>
+          <span class="s-txt" id="rev-stxt">Paste or type Ajami script above</span>
+        </div>
+      </div>
+
+      <div class="bd-sec hidden" id="rev-bd">
+        <div class="bd-lbl">Word by word</div>
+        <div class="bd-grid" id="rev-bd-grid"></div>
+      </div>
+
+      <div class="ex-sec">
+        <div class="ex-lbl">Try an Ajami example</div>
+        <div class="ex-row" id="rev-examples"></div>
       </div>
     </div>
 
-    <!-- Info cards -->
+    <!-- Dictionary -->
+    <div class="dict-sec">
+      <div class="dict-hd">
+        <div>
+          <h3>📖 Browse the dictionary</h3>
+          <div class="dict-count" id="dict-count"></div>
+        </div>
+        <input type="text" class="dict-srch" id="dict-srch" placeholder="Search English or Hausa…"/>
+      </div>
+      <div class="contribute-note">
+        🎙️ <strong>Help us add audio</strong> — the <code>audio</code> field in <a href="dictionary.json" target="_blank">dictionary.json</a> accepts a URL to an audio file for each word. If you can record native Hausa pronunciation, open a <a href="https://github.com/amshoo/ajami-translator" target="_blank">Pull Request</a> to contribute.
+      </div>
+      <div class="cat-tabs" id="cat-tabs"></div>
+      <div class="dict-grid" id="dict-grid"></div>
+    </div>
+
     <div class="info-grid">
-      <div class="info-card">
-        <div class="info-card-icon">📜</div>
-        <h3>What is Ajami?</h3>
-        <p>Ajami is the practice of writing African languages using Arabic script. Hausa speakers have used it since the 17th century for poetry, trade, and Islamic scholarship.</p>
-      </div>
-      <div class="info-card">
-        <div class="info-card-icon">⚙️</div>
-        <h3>How it works</h3>
-        <p>English is first translated to Hausa using Meta's NLLB-200 model. The Hausa text is then converted to Ajami script using phoneme-to-glyph mapping from the West African Warsh tradition.</p>
-      </div>
-      <div class="info-card">
-        <div class="info-card-icon">⚠️</div>
-        <h3>Accuracy note</h3>
-        <p>Machine translation to Hausa is imperfect. Ajami rendering is rule-based and may miss regional variants. Use as a learning aid, not a certified translation.</p>
-      </div>
+      <div class="ic"><div class="ic-icon">📜</div><h3>What is Ajami?</h3><p>Ajami is the practice of writing African languages using Arabic script. Hausa speakers have used it since the 17th century for poetry, trade, and Islamic scholarship.</p></div>
+      <div class="ic"><div class="ic-icon">🔄</div><h3>Two directions</h3><p>Translate English → Hausa Ajami to write, or Ajami → English to read and understand historical Hausa manuscripts and documents.</p></div>
+      <div class="ic"><div class="ic-icon">🔊</div><h3>Audio</h3><p>Click the speaker button to hear Hausa spoken. Audio quality improves as community members contribute recordings to the dictionary.</p></div>
+      <div class="ic"><div class="ic-icon">🤝</div><h3>Contribute</h3><p>This dictionary grows with community help. Add words, fix errors, or record audio by opening a Pull Request on GitHub.</p></div>
     </div>
-
   </div>
 </main>
 
@@ -704,285 +399,332 @@
   <div class="container">
     <p>
       Part of the <strong>Ajami Suite</strong> — open tools for digital Ajami literacy.<br/>
-      Translation powered by <a href="https://huggingface.co/facebook/nllb-200-distilled-600M" target="_blank">Meta NLLB-200</a> (CC-BY-NC 4.0).
-      Ajami rendering uses the West African Warsh orthography tradition.<br/>
-      <a href="https://github.com/amshoo//ajami-translator" target="_blank">View source on GitHub</a> ·
+      Dictionary sourced from open Hausa language resources · Ajami rendering uses West African Warsh / Kano orthography<br/>
+      <a href="https://github.com/amshoo/ajami-translator" target="_blank">View source on GitHub</a> ·
       <a href="https://www.bu.edu/pardeeschool/research/african-studies-center/african-ajami-library/" target="_blank">African Ajami Library (BU)</a>
     </p>
   </div>
 </footer>
 
 <script>
-// ── Hausa Latin → Ajami transliteration engine ────────────────────────────
-// Based on West African / Warsh / Kano orthography tradition
-// Source: corpus/hausa_ajami_characters.json
-
-const PHONEME_MAP = [
-  // Hausa-specific implosives and special consonants — must come BEFORE single-letter matches
-  { lat: 'ɓ',  ajm: 'ٻ' },
-  { lat: 'ɗ',  ajm: 'ڟ' },
-  { lat: 'ƙ',  ajm: 'ڧ' },
-  { lat: 'ƴ',  ajm: 'ۑ' },
-
-  // Digraphs — must come BEFORE single consonants
-  { lat: 'sh',  ajm: 'ش' },
-  { lat: 'ts',  ajm: 'ط' },
-  { lat: 'ky',  ajm: 'كي' },
-  { lat: 'gy',  ajm: 'ݣي' },
-  { lat: 'kw',  ajm: 'كو' },
-  { lat: 'gw',  ajm: 'ݣو' },
-
-  // Vowels — long first, then short
-  { lat: 'aa', ajm: 'ا' },
-  { lat: 'ii', ajm: 'ي' },
-  { lat: 'uu', ajm: 'و' },
-
-  // Short vowels → diacritics
-  { lat: 'a',  ajm: 'َ' },
-  { lat: 'e',  ajm: 'ٜ' },
-  { lat: 'i',  ajm: 'ِ' },
-  { lat: 'u',  ajm: 'ُ' },
-  { lat: 'o',  ajm: 'ُو' },  // Hausa o = damma + waw
-
-  // Standard consonants
-  { lat: 'b',  ajm: 'ب' },
-  { lat: 't',  ajm: 'ت' },
-  { lat: 'j',  ajm: 'ج' },
-  { lat: 'h',  ajm: 'ه' },
-  { lat: 'd',  ajm: 'د' },
-  { lat: 'r',  ajm: 'ر' },
-  { lat: 'z',  ajm: 'ز' },
-  { lat: 's',  ajm: 'س' },
-  { lat: 'f',  ajm: 'ڢ' },   // West African fa
-  { lat: 'k',  ajm: 'ك' },
-  { lat: 'l',  ajm: 'ل' },
-  { lat: 'm',  ajm: 'م' },
-  { lat: 'n',  ajm: 'ن' },
-  { lat: 'w',  ajm: 'و' },
-  { lat: 'y',  ajm: 'ي' },
-  { lat: 'g',  ajm: 'ݣ' },
-  { lat: 'c',  ajm: 'ج' },   // c in Hausa = ch/j sound
+// ── Transliteration engine ────────────────────────────────────────────────
+const PM=[
+  {l:'ɓ',a:'ٻ'},{l:'ɗ',a:'ڟ'},{l:'ƙ',a:'ڧ'},{l:'ƴ',a:'ۑ'},
+  {l:'sh',a:'ش'},{l:'ts',a:'ط'},{l:'ky',a:'كي'},{l:'gy',a:'ݣي'},{l:'kw',a:'كو'},{l:'gw',a:'ݣو'},
+  {l:'aa',a:'ا'},{l:'ii',a:'ي'},{l:'uu',a:'و'},
+  {l:'a',a:'َ'},{l:'e',a:'ٜ'},{l:'i',a:'ِ'},{l:'u',a:'ُ'},{l:'o',a:'ُو'},
+  {l:'b',a:'ب'},{l:'t',a:'ت'},{l:'j',a:'ج'},{l:'h',a:'ه'},{l:'d',a:'د'},
+  {l:'r',a:'ر'},{l:'z',a:'ز'},{l:'s',a:'س'},{l:'f',a:'ڢ'},{l:'k',a:'ك'},
+  {l:'l',a:'ل'},{l:'m',a:'م'},{l:'n',a:'ن'},{l:'w',a:'و'},{l:'y',a:'ي'},
+  {l:'g',a:'ݣ'},{l:'c',a:'ج'},{l:"'",a:'ع'},
 ];
+const RM={};[...PM].reverse().forEach(({l,a})=>{a.split('').forEach(ch=>{if(!RM[ch])RM[ch]=l;})});
 
-// Word-final n → dotless nun (ں)
-function applyFinalNun(ajami) {
-  return ajami.replace(/نَ$/g, 'ں').replace(/نِ$/g, 'ں').replace(/نُ$/g, 'ں').replace(/ن$/g, 'ں');
+function toAjami(ha){
+  return ha.split(' ').map(w=>{
+    let r='',i=0,c=w.replace(/['']/g,"'");
+    while(i<c.length){let m=false;for(const {l,a} of PM){if(c.slice(i,i+l.length).toLowerCase()===l){r+=a;i+=l.length;m=true;break;}}if(!m)i++;}
+    return r.replace(/ن$/,'ں');
+  }).join(' ');
 }
 
-function hausaLatinToAjami(text) {
-  if (!text || !text.trim()) return '';
+function ajToLatin(text){let r='';for(const ch of text){if(RM[ch])r+=RM[ch];else if(ch===' ')r+=' ';}return r;}
 
-  const words = text.toLowerCase().split(/\s+/);
-  const ajmiWords = words.map(word => {
-    // Strip punctuation, preserve it
-    const punct = word.match(/[.,!?؟،۔]+$/)?.[0] || '';
-    const clean = word.replace(/[.,!?؟،۔]+$/, '');
+// ── Dictionary ────────────────────────────────────────────────────────────
+let DICT=[];
 
-    let result = '';
-    let i = 0;
-    while (i < clean.length) {
-      let matched = false;
-      // Try longest match first (digraphs before single chars)
-      for (const { lat, ajm } of PHONEME_MAP) {
-        if (clean.slice(i, i + lat.length).toLowerCase() === lat) {
-          result += ajm;
-          i += lat.length;
-          matched = true;
-          break;
-        }
-      }
-      if (!matched) {
-        // Unknown character — skip silently (handles apostrophes, etc.)
-        i++;
-      }
-    }
-
-    // Apply word-final dotless nun
-    result = applyFinalNun(result);
-
-    // Add Arabic punctuation equivalent
-    const punctMap = { '.': '۔', ',': '،', '?': '؟', '!': '!' };
-    const ajmiPunct = punct.split('').map(p => punctMap[p] || p).join('');
-
-    return result + ajmiPunct;
-  });
-
-  // RTL: words are already correct, join with space
-  return ajmiWords.join(' ');
-}
-
-// ── HuggingFace NLLB API call ─────────────────────────────────────────────
-// Using the fine-tuned English→Hausa model: mide6x/english-hausa-nllb
-// Falls back to facebook/nllb-200-distilled-600M with hau_Latn target
-
-async function translateToHausa(englishText) {
-  const HF_API = 'https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt-en-ha';
-
-  const response = await fetch(HF_API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ inputs: englishText })
-  });
-
-  if (!response.ok) {
-    // Model may be loading — HuggingFace returns 503 on cold start
-    if (response.status === 503) {
-      throw new Error('Model is loading, please try again in 20 seconds');
-    }
-    throw new Error(`Translation failed (${response.status})`);
+async function loadDict(){
+  try{
+    const res=await fetch('dictionary.json');
+    DICT=await res.json();
+  }catch(e){
+    // minimal fallback
+    DICT=[
+      {en:'house',ha:'gida',cat:'Home',audio:''},{en:'water',ha:'ruwa',cat:'Nature',audio:''},
+      {en:'sun',ha:'rana',cat:'Nature',audio:''},{en:'father',ha:'baba',cat:'Family',audio:''},
+      {en:'mother',ha:'uwa',cat:'Family',audio:''},{en:'god',ha:'Allah',cat:'Religion',audio:''},
+      {en:'peace',ha:'salama',cat:'Greetings',audio:''},{en:'knowledge',ha:'ilimi',cat:'Religion',audio:''},
+      {en:'light',ha:'haske',cat:'Religion',audio:''},{en:'great',ha:'mai girma',cat:'Religion',audio:''},
+      {en:'is',ha:'ne',cat:'Common',audio:''},{en:'market',ha:'kasuwa',cat:'Places',audio:''},
+    ];
   }
-
-  const data = await response.json();
-
-  // Response format: [{ translation_text: "..." }]
-  if (Array.isArray(data) && data[0]?.translation_text) {
-    return data[0].translation_text;
-  }
-
-  // NLLB format: [{ generated_text: "..." }]
-  if (Array.isArray(data) && data[0]?.generated_text) {
-    return data[0].generated_text;
-  }
-
-  throw new Error('Unexpected response format from translation API');
+  DICT.forEach(e=>{e.ajm=toAjami(e.ha);});
+  renderDict();
+  buildRevExamples();
+  document.getElementById('dict-count').textContent=`${DICT.length} words`;
 }
 
-// ── UI Logic ──────────────────────────────────────────────────────────────
+function lookupEn(w){return DICT.find(e=>e.en===w.toLowerCase().trim())||null;}
+function lookupAjm(ajm){return DICT.find(e=>e.ajm===ajm)||null;}
 
-const inputEl        = document.getElementById('input-text');
-const charCountEl    = document.getElementById('char-count');
-const translateBtn   = document.getElementById('translate-btn');
-const clearBtn       = document.getElementById('clear-btn');
-const copyHausaBtn   = document.getElementById('copy-hausa-btn');
-const copyAjamiBtn   = document.getElementById('copy-ajami-btn');
-const hausaOutputEl  = document.getElementById('hausa-output');
-const ajmiOutputEl   = document.getElementById('ajami-output');
-const statusDot      = document.getElementById('status-dot');
-const statusText     = document.getElementById('status-text');
-const spinner        = document.getElementById('spinner');
-const btnLabel       = document.getElementById('btn-label');
-const noteEl         = document.getElementById('transliteration-note');
-
-let hausaText = '';
-let ajmiText  = '';
-
-function setStatus(state, message) {
-  statusDot.className = 'status-dot ' + state;
-  statusText.textContent = message;
+// ── Audio ─────────────────────────────────────────────────────────────────
+let hauVoice=null;
+if('speechSynthesis' in window){
+  const init=()=>{
+    const v=speechSynthesis.getVoices();
+    hauVoice=v.find(x=>x.lang.startsWith('ha'))||v.find(x=>x.lang.startsWith('ar'))||v[0]||null;
+  };
+  init();
+  speechSynthesis.addEventListener('voiceschanged',init);
 }
 
-function setLoading(loading) {
-  translateBtn.disabled = loading;
-  spinner.classList.toggle('active', loading);
-  btnLabel.textContent = loading ? 'Translating…' : 'Translate';
+function speak(text){
+  if(!('speechSynthesis' in window)){alert('Text-to-speech not supported in this browser.');return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='ha'; u.rate=0.82;
+  if(hauVoice) u.voice=hauVoice;
+  speechSynthesis.speak(u);
 }
 
-inputEl.addEventListener('input', () => {
-  const len = inputEl.value.length;
-  charCountEl.textContent = `${len} / 500`;
-  charCountEl.className = 'char-count' + (len > 400 ? ' warning' : '');
-  translateBtn.disabled = len === 0;
-  if (len === 0) setStatus('', 'Ready — enter English text above');
-});
-
-inputEl.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-    e.preventDefault();
-    if (!translateBtn.disabled) doTranslate();
-  }
-});
-
-clearBtn.addEventListener('click', () => {
-  inputEl.value = '';
-  charCountEl.textContent = '0 / 500';
-  charCountEl.className = 'char-count';
-  translateBtn.disabled = true;
-  hausaOutputEl.textContent = 'Translation appears here';
-  hausaOutputEl.className = 'placeholder-text';
-  ajmiOutputEl.textContent = 'الكتابة العجمية تظهر هنا';
-  ajmiOutputEl.className = 'placeholder-text';
-  noteEl.textContent = '';
-  copyHausaBtn.style.display = 'none';
-  copyAjamiBtn.style.display = 'none';
-  setStatus('', 'Ready — enter English text above');
-  hausaText = '';
-  ajmiText  = '';
-  inputEl.focus();
-});
-
-translateBtn.addEventListener('click', doTranslate);
-
-async function doTranslate() {
-  const text = inputEl.value.trim();
-  if (!text) return;
-
-  setLoading(true);
-  setStatus('loading', 'Translating English → Hausa…');
-
-  try {
-    // Step 1: English → Hausa (Latin)
-    hausaText = await translateToHausa(text);
-
-    // Update Hausa output
-    hausaOutputEl.textContent = hausaText;
-    hausaOutputEl.className = '';
-
-    setStatus('loading', 'Converting Hausa → Ajami script…');
-
-    // Step 2: Hausa (Latin) → Ajami
-    ajmiText = hausaLatinToAjami(hausaText);
-
-    if (ajmiText.trim()) {
-      ajmiOutputEl.textContent = ajmiText;
-      ajmiOutputEl.className = '';
-      noteEl.textContent = 'Rendered in West African Warsh / Kano Ajami orthography';
-    } else {
-      ajmiOutputEl.textContent = 'Could not render Ajami for this text';
-      ajmiOutputEl.className = 'placeholder-text';
-    }
-
-    copyHausaBtn.style.display = 'inline-flex';
-    copyAjamiBtn.style.display = 'inline-flex';
-    setStatus('success', 'Done — copy Hausa or Ajami text using the buttons above');
-
-  } catch (err) {
-    setStatus('error', err.message || 'Translation failed — check your connection and try again');
-    hausaOutputEl.textContent = 'Translation failed';
-    hausaOutputEl.className = 'placeholder-text';
-    ajmiOutputEl.textContent = 'الكتابة العجمية تظهر هنا';
-    ajmiOutputEl.className = 'placeholder-text';
-  } finally {
-    setLoading(false);
+function playAudio(url,hausa){
+  if(url){
+    const a=new Audio(url);
+    a.onerror=()=>speak(hausa);
+    a.play().catch(()=>speak(hausa));
+  } else {
+    speak(hausa);
   }
 }
 
-// Copy buttons
-copyHausaBtn.addEventListener('click', () => {
-  if (!hausaText) return;
-  navigator.clipboard.writeText(hausaText).then(() => {
-    copyHausaBtn.textContent = 'Copied!';
-    setTimeout(() => { copyHausaBtn.textContent = 'Copy Hausa'; }, 2000);
-  });
+// ── Forward (English → Ajami) ─────────────────────────────────────────────
+const fwdIn   =document.getElementById('fwd-input');
+const fwdChar =document.getElementById('fwd-char');
+const fwdBtn  =document.getElementById('fwd-btn');
+const fwdClr  =document.getElementById('fwd-clear');
+const fwdAudHa=document.getElementById('fwd-aud-ha');
+const fwdCpHa =document.getElementById('fwd-cp-ha');
+const fwdCpAj =document.getElementById('fwd-cp-aj');
+const hOut    =document.getElementById('hausa-out');
+const aOut    =document.getElementById('ajami-out');
+const fwdDot  =document.getElementById('fwd-dot');
+const fwdSTxt =document.getElementById('fwd-stxt');
+const fwdNote =document.getElementById('fwd-note');
+const fwdBd   =document.getElementById('fwd-bd');
+const fwdBdG  =document.getElementById('fwd-bd-grid');
+let lastHa='',lastAj='';
+
+function setSt(dot,txt,state,msg){dot.className='s-dot '+state;txt.textContent=msg;}
+
+fwdIn.addEventListener('input',()=>{
+  const l=fwdIn.value.length;
+  fwdChar.textContent=`${l} / 300`;
+  fwdChar.className='char-c'+(l>240?' warn':'');
+  fwdBtn.disabled=l===0;
+});
+fwdIn.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();doFwd();}});
+
+fwdClr.addEventListener('click',()=>{
+  fwdIn.value=''; fwdChar.textContent='0 / 300'; fwdChar.className='char-c';
+  fwdBtn.disabled=true;
+  hOut.textContent='Translation appears here'; hOut.className='out-hausa ph';
+  aOut.textContent='الكتابة العجمية تظهر هنا'; aOut.className='out-ajami ph';
+  fwdNote.textContent='';
+  [fwdAudHa,fwdCpHa,fwdCpAj].forEach(b=>b.style.display='none');
+  fwdBd.classList.add('hidden'); fwdBdG.innerHTML='';
+  setSt(fwdDot,fwdSTxt,'','Ready — type English words above');
+  lastHa=''; lastAj=''; fwdIn.focus();
 });
 
-copyAjamiBtn.addEventListener('click', () => {
-  if (!ajmiText) return;
-  navigator.clipboard.writeText(ajmiText).then(() => {
-    copyAjamiBtn.textContent = 'Copied!';
-    setTimeout(() => { copyAjamiBtn.textContent = 'Copy Ajami'; }, 2000);
+fwdBtn.addEventListener('click',doFwd);
+
+function doFwd(){
+  const text=fwdIn.value.trim(); if(!text) return;
+  const tokens=text.toLowerCase().split(/[,،\n]+/).map(t=>t.trim()).filter(Boolean);
+  const results=[];
+  tokens.forEach(tok=>{
+    const d=lookupEn(tok);
+    if(d){results.push({eng:tok,...d,found:true});return;}
+    const words=tok.split(/\s+/);
+    if(words.length>1){
+      const ph=lookupEn(tok);
+      if(ph){results.push({eng:tok,...ph,found:true});return;}
+      words.forEach(w=>{const e=lookupEn(w);if(e)results.push({eng:w,...e,found:true});else results.push({eng:w,ha:'—',ajm:'',audio:'',found:false});});
+    } else {results.push({eng:tok,ha:'—',ajm:'',audio:'',found:false});}
   });
+
+  const found=results.filter(r=>r.found);
+  if(found.length===0){
+    hOut.textContent='No words found — try the dictionary below'; hOut.className='out-hausa ph';
+    aOut.textContent='الكتابة العجمية تظهر هنا'; aOut.className='out-ajami ph';
+    fwdBd.classList.add('hidden');
+    setSt(fwdDot,fwdSTxt,'err','No matches — try simpler words or browse the dictionary'); return;
+  }
+
+  lastHa=found.map(r=>r.ha).join(' ');
+  lastAj=found.map(r=>r.ajm).join(' ');
+  hOut.textContent=lastHa; hOut.className='out-hausa has-val';
+  aOut.textContent=lastAj; aOut.className='out-ajami';
+  fwdNote.textContent='Rendered in West African Warsh / Kano Ajami orthography';
+  [fwdAudHa,fwdCpHa,fwdCpAj].forEach(b=>b.style.display='inline-flex');
+
+  const nf=results.filter(r=>!r.found);
+  setSt(fwdDot,fwdSTxt,nf.length?'warn':'ok',
+    nf.length?`${found.length} translated · not found: ${nf.map(r=>r.eng).join(', ')}`
+             :`${found.length} word${found.length>1?'s':''} translated`);
+
+  fwdBdG.innerHTML='';
+  results.forEach(r=>{
+    const c=document.createElement('div');
+    c.className='wc '+(r.found?'found':'nf');
+    c.innerHTML=`<div class="we">${r.eng}</div><div class="wh">${r.ha}</div>${r.found?`<div class="wa">${r.ajm}</div><span class="wd-aud">${r.audio?'🎵 play':'🔊 TTS'}</span>`:''}`;
+    if(r.found) c.querySelector('.wd-aud').addEventListener('click',e=>{e.stopPropagation();playAudio(r.audio,r.ha);});
+    fwdBdG.appendChild(c);
+  });
+  fwdBd.classList.remove('hidden');
+}
+
+fwdAudHa.addEventListener('click',()=>speak(lastHa));
+fwdCpHa.addEventListener('click',()=>{navigator.clipboard.writeText(lastHa).then(()=>{fwdCpHa.textContent='Copied!';setTimeout(()=>fwdCpHa.textContent='Copy Hausa',2000);});});
+fwdCpAj.addEventListener('click',()=>{navigator.clipboard.writeText(lastAj).then(()=>{fwdCpAj.textContent='Copied!';setTimeout(()=>fwdCpAj.textContent='Copy Ajami',2000);});});
+document.querySelectorAll('.ex-chip').forEach(ch=>{ch.addEventListener('click',()=>{fwdIn.value=ch.textContent.trim();fwdIn.dispatchEvent(new Event('input'));doFwd();});});
+
+// ── Reverse (Ajami → English) ─────────────────────────────────────────────
+const revIn  =document.getElementById('rev-input');
+const revChar=document.getElementById('rev-char');
+const revBtn =document.getElementById('rev-btn');
+const revClr =document.getElementById('rev-clear');
+const revAud =document.getElementById('rev-aud');
+const revCpHa=document.getElementById('rev-cp-ha');
+const revCpEn=document.getElementById('rev-cp-en');
+const rHOut  =document.getElementById('rev-ha-out');
+const rEOut  =document.getElementById('rev-en-out');
+const revDot =document.getElementById('rev-dot');
+const revSTxt=document.getElementById('rev-stxt');
+const revNote=document.getElementById('rev-note');
+const revBd  =document.getElementById('rev-bd');
+const revBdG =document.getElementById('rev-bd-grid');
+let lastRHa='',lastREn='';
+
+revIn.addEventListener('input',()=>{
+  const l=revIn.value.length;
+  revChar.textContent=`${l} / 300`;
+  revChar.className='char-c'+(l>240?' warn':'');
+  revBtn.disabled=l===0;
+});
+revIn.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();doRev();}});
+
+revClr.addEventListener('click',()=>{
+  revIn.value=''; revChar.textContent='0 / 300'; revChar.className='char-c';
+  revBtn.disabled=true;
+  rHOut.textContent='Hausa appears here'; rHOut.className='out-rev-ha ph';
+  rEOut.textContent='English meaning appears here'; rEOut.className='out-rev-en ph';
+  revNote.textContent='';
+  [revAud,revCpHa,revCpEn].forEach(b=>b.style.display='none');
+  revBd.classList.add('hidden'); revBdG.innerHTML='';
+  setSt(revDot,revSTxt,'','Paste or type Ajami script above');
+  lastRHa=''; lastREn=''; revIn.focus();
+});
+revBtn.addEventListener('click',doRev);
+
+function doRev(){
+  const text=revIn.value.trim(); if(!text) return;
+  const ajWords=text.split(/\s+/).filter(Boolean);
+  const results=[];
+  ajWords.forEach(ajW=>{
+    let entry=lookupAjm(ajW);
+    if(!entry){const lat=ajToLatin(ajW);entry=DICT.find(e=>e.ha===lat||e.ha.replace(/[ɓɗƙƴ]/g,c=>({ɓ:'b',ɗ:'d',ƙ:'k',ƴ:'y'}[c]||c))===lat)||null;}
+    if(entry) results.push({ajm:ajW,ha:entry.ha,en:entry.en,audio:entry.audio,found:true});
+    else results.push({ajm:ajW,ha:ajToLatin(ajW)||'—',en:'?',audio:'',found:false});
+  });
+
+  const found=results.filter(r=>r.found);
+  lastRHa=results.map(r=>r.ha).join(' ');
+  lastREn=found.map(r=>r.en).join(' / ');
+  rHOut.textContent=lastRHa; rHOut.className='out-rev-ha';
+  if(found.length>0){
+    rEOut.textContent=lastREn; rEOut.className='out-rev-en';
+    revNote.textContent=`${found.length} of ${results.length} word${results.length>1?'s':''} matched`;
+    [revAud,revCpHa,revCpEn].forEach(b=>b.style.display='inline-flex');
+    setSt(revDot,revSTxt,'ok',`${found.length} word${found.length>1?'s':''} identified`);
+  } else {
+    rEOut.textContent='No dictionary matches found'; rEOut.className='out-rev-en ph';
+    revNote.textContent='Try the example chips below or paste Ajami from the Keyboard app';
+    setSt(revDot,revSTxt,'warn','No matches — try example Ajami words below');
+  }
+
+  revBdG.innerHTML='';
+  results.forEach(r=>{
+    const c=document.createElement('div');
+    c.className='wc '+(r.found?'found':'nf');
+    c.innerHTML=`<div class="we" style="font-family:var(--fa);font-size:18px;direction:rtl;margin-bottom:4px">${r.ajm}</div><div class="wh">${r.ha}</div>${r.found?`<div class="wh" style="color:var(--green);font-weight:600">${r.en}</div><span class="wd-aud">${r.audio?'🎵 play':'🔊 TTS'}</span>`:''}`;
+    if(r.found) c.querySelector('.wd-aud').addEventListener('click',e=>{e.stopPropagation();playAudio(r.audio,r.ha);});
+    revBdG.appendChild(c);
+  });
+  revBd.classList.remove('hidden');
+}
+
+revAud.addEventListener('click',()=>speak(lastRHa));
+revCpHa.addEventListener('click',()=>{navigator.clipboard.writeText(lastRHa).then(()=>{revCpHa.textContent='Copied!';setTimeout(()=>revCpHa.textContent='Copy Hausa',2000);});});
+revCpEn.addEventListener('click',()=>{navigator.clipboard.writeText(lastREn).then(()=>{revCpEn.textContent='Copied!';setTimeout(()=>revCpEn.textContent='Copy English',2000);});});
+
+// ── Mode switching ────────────────────────────────────────────────────────
+document.getElementById('mode-fwd').addEventListener('click',()=>{
+  document.getElementById('mode-fwd').classList.add('active');
+  document.getElementById('mode-rev').classList.remove('active');
+  document.getElementById('fwd-mode').classList.remove('hidden');
+  document.getElementById('rev-mode').classList.add('hidden');
+});
+document.getElementById('mode-rev').addEventListener('click',()=>{
+  document.getElementById('mode-rev').classList.add('active');
+  document.getElementById('mode-fwd').classList.remove('active');
+  document.getElementById('rev-mode').classList.remove('hidden');
+  document.getElementById('fwd-mode').classList.add('hidden');
 });
 
-// Example chips
-document.querySelectorAll('.example-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    inputEl.value = chip.textContent.trim();
-    inputEl.dispatchEvent(new Event('input'));
-    inputEl.focus();
-    doTranslate();
+function buildRevExamples(){
+  const c=document.getElementById('rev-examples');
+  if(!c||!DICT.length) return;
+  c.innerHTML='';
+  const samples=DICT.filter(e=>e.ajm&&e.ajm.length>1).slice(0,10);
+  samples.forEach(e=>{
+    const d=document.createElement('div');
+    d.className='ex-chip';
+    d.style.fontFamily='var(--fa)'; d.style.fontSize='20px'; d.style.direction='rtl';
+    d.textContent=e.ajm;
+    d.title=e.en;
+    d.addEventListener('click',()=>{revIn.value=e.ajm;revIn.dispatchEvent(new Event('input'));doRev();});
+    c.appendChild(d);
   });
-});
+}
+
+// ── Dictionary browser ────────────────────────────────────────────────────
+let activeC='All', srchQ='';
+
+function renderDict(){
+  const tabs=document.getElementById('cat-tabs');
+  const grid=document.getElementById('dict-grid');
+  if(!DICT.length) return;
+  if(!tabs.childElementCount){
+    const cats=['All',...new Set(DICT.map(e=>e.cat))];
+    cats.forEach(cat=>{
+      const t=document.createElement('div');
+      t.className='ct'+(cat==='All'?' active':'');
+      t.textContent=cat+(cat==='All'?` (${DICT.length})`:'');
+      t.addEventListener('click',()=>{activeC=cat;document.querySelectorAll('.ct').forEach(x=>x.classList.remove('active'));t.classList.add('active');renderDict();});
+      tabs.appendChild(t);
+    });
+  }
+  const filtered=DICT.filter(e=>(activeC==='All'||e.cat===activeC)&&(!srchQ||e.en.includes(srchQ)||e.ha.includes(srchQ)));
+  grid.innerHTML='';
+  filtered.forEach(entry=>{
+    const el=document.createElement('div');
+    el.className='de';
+    const hasAudio=!!entry.audio;
+    el.innerHTML=`<div class="de-en">${entry.en}</div><div class="de-ha">${entry.ha}</div><div class="de-aj">${entry.ajm}</div><div class="de-aud ${hasAudio?'has-audio':''}">${hasAudio?'🎵 play audio':'🔊 TTS only'}</div>`;
+    el.querySelector('.de-aud').addEventListener('click',ev=>{ev.stopPropagation();playAudio(entry.audio,entry.ha);});
+    el.addEventListener('click',()=>{
+      if(!document.getElementById('fwd-mode').classList.contains('hidden')){fwdIn.value=entry.en;fwdIn.dispatchEvent(new Event('input'));doFwd();}
+      else{revIn.value=entry.ajm;revIn.dispatchEvent(new Event('input'));doRev();}
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+    grid.appendChild(el);
+  });
+}
+
+document.getElementById('dict-srch').addEventListener('input',e=>{srchQ=e.target.value.toLowerCase();renderDict();});
+
+loadDict();
 </script>
-
 </body>
 </html>
