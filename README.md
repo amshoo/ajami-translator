@@ -7,9 +7,9 @@
 An open-source web app that translates **English text into Hausa**, then renders it in **Hausa Ajami script** — the Arabic-derived writing system Hausa scholars have used since the 17th century.
 
 > Part of the **Ajami Suite** — a set of open tools for digital Ajami literacy.
-> See also: [Ajami Keyboard](https://github.com/ajami-suite/ajami-keyboard) · [Ajami Learn](https://github.com/ajami-suite/ajami-learn)
+> See also: [Ajami Keyboard](https://github.com/amshoo/ajami-keyboard) · [Ajami Learn](https://github.com/amshoo/ajami-learn)
 
-🌐 **Live at:** [ajami-suite.github.io/ajami-translator](https://ajami-suite.github.io/ajami-translator)
+🌐 **Live at:** [https://amshoo.github.io/ajami-translator](https://amshoo.github.io/ajami-translator)
 
 ---
 
