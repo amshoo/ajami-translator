@@ -472,14 +472,34 @@ function speak(text){
   speechSynthesis.speak(u);
 }
 
-function playAudio(url,hausa){
-  if(url){
-    const a=new Audio(url);
-    a.onerror=()=>speak(hausa);
-    a.play().catch(()=>speak(hausa));
-  } else {
+function playAudio(url, hausa, btnEl) {
+  // If no URL, go straight to TTS
+  if (!url) { speak(hausa); showAudioLabel(btnEl, 'tts'); return; }
+
+  // Try loading the file first — if 404, fall back to TTS silently
+  const a = new Audio();
+  a.src = url;
+
+  a.addEventListener('canplaythrough', () => {
+    a.play();
+    showAudioLabel(btnEl, 'file');
+  }, { once: true });
+
+  a.addEventListener('error', () => {
+    // File not uploaded yet — use TTS
     speak(hausa);
-  }
+    showAudioLabel(btnEl, 'tts');
+  }, { once: true });
+
+  // Trigger load
+  a.load();
+}
+
+function showAudioLabel(btn, type) {
+  if (!btn) return;
+  const original = btn.innerHTML;
+  btn.innerHTML = type === 'file' ? '🎵 playing…' : '🔊 TTS…';
+  setTimeout(() => { btn.innerHTML = original; }, 2000);
 }
 
 // ── Forward (English → Ajami) ─────────────────────────────────────────────
@@ -563,13 +583,13 @@ function doFwd(){
     const c=document.createElement('div');
     c.className='wc '+(r.found?'found':'nf');
     c.innerHTML=`<div class="we">${r.eng}</div><div class="wh">${r.ha}</div>${r.found?`<div class="wa">${r.ajm}</div><span class="wd-aud">${r.audio?'🎵 play':'🔊 TTS'}</span>`:''}`;
-    if(r.found) c.querySelector('.wd-aud').addEventListener('click',e=>{e.stopPropagation();playAudio(r.audio,r.ha);});
+    if(r.found) c.querySelector('.wd-aud').addEventListener('click',e=>{e.stopPropagation();playAudio(r.audio,r.ha,e.target);});
     fwdBdG.appendChild(c);
   });
   fwdBd.classList.remove('hidden');
 }
 
-fwdAudHa.addEventListener('click',()=>speak(lastHa));
+fwdAudHa.addEventListener('click',()=>playAudio(null,lastHa,fwdAudHa));
 fwdCpHa.addEventListener('click',()=>{navigator.clipboard.writeText(lastHa).then(()=>{fwdCpHa.textContent='Copied!';setTimeout(()=>fwdCpHa.textContent='Copy Hausa',2000);});});
 fwdCpAj.addEventListener('click',()=>{navigator.clipboard.writeText(lastAj).then(()=>{fwdCpAj.textContent='Copied!';setTimeout(()=>fwdCpAj.textContent='Copy Ajami',2000);});});
 document.querySelectorAll('.ex-chip').forEach(ch=>{ch.addEventListener('click',()=>{fwdIn.value=ch.textContent.trim();fwdIn.dispatchEvent(new Event('input'));doFwd();});});
@@ -643,13 +663,13 @@ function doRev(){
     const c=document.createElement('div');
     c.className='wc '+(r.found?'found':'nf');
     c.innerHTML=`<div class="we" style="font-family:var(--fa);font-size:18px;direction:rtl;margin-bottom:4px">${r.ajm}</div><div class="wh">${r.ha}</div>${r.found?`<div class="wh" style="color:var(--green);font-weight:600">${r.en}</div><span class="wd-aud">${r.audio?'🎵 play':'🔊 TTS'}</span>`:''}`;
-    if(r.found) c.querySelector('.wd-aud').addEventListener('click',e=>{e.stopPropagation();playAudio(r.audio,r.ha);});
+    if(r.found) c.querySelector('.wd-aud').addEventListener('click',e=>{e.stopPropagation();playAudio(r.audio,r.ha,e.target);});
     revBdG.appendChild(c);
   });
   revBd.classList.remove('hidden');
 }
 
-revAud.addEventListener('click',()=>speak(lastRHa));
+revAud.addEventListener('click',()=>playAudio(null,lastRHa,revAud));
 revCpHa.addEventListener('click',()=>{navigator.clipboard.writeText(lastRHa).then(()=>{revCpHa.textContent='Copied!';setTimeout(()=>revCpHa.textContent='Copy Hausa',2000);});});
 revCpEn.addEventListener('click',()=>{navigator.clipboard.writeText(lastREn).then(()=>{revCpEn.textContent='Copied!';setTimeout(()=>revCpEn.textContent='Copy English',2000);});});
 
@@ -707,7 +727,7 @@ function renderDict(){
     el.className='de';
     const hasAudio=!!entry.audio;
     el.innerHTML=`<div class="de-en">${entry.en}</div><div class="de-ha">${entry.ha}</div><div class="de-aj">${entry.ajm}</div><div class="de-aud ${hasAudio?'has-audio':''}">${hasAudio?'🎵 play audio':'🔊 TTS only'}</div>`;
-    el.querySelector('.de-aud').addEventListener('click',ev=>{ev.stopPropagation();playAudio(entry.audio,entry.ha);});
+    el.querySelector('.de-aud').addEventListener('click',ev=>{ev.stopPropagation();playAudio(entry.audio,entry.ha,ev.target);});
     el.addEventListener('click',()=>{
       if(!document.getElementById('fwd-mode').classList.contains('hidden')){fwdIn.value=entry.en;fwdIn.dispatchEvent(new Event('input'));doFwd();}
       else{revIn.value=entry.ajm;revIn.dispatchEvent(new Event('input'));doRev();}
